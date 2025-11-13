@@ -1,0 +1,84 @@
+# Lighting Scenes Package
+# Philips Hue integration and coordinated lighting scenes
+# NOTE: This is a placeholder for future Philips Hue integration
+
+# Future: Light groups
+# light:
+#   - platform: group
+#     name: Party Lights
+#     entities:
+#       - light.living_room_hue
+#       - light.kitchen_hue
+#       - light.office_hue
+
+# Future: Scenes
+# scene:
+#   - name: Party Mode - Energetic
+#     entities:
+#       light.living_room_hue:
+#         state: on
+#         brightness: 255
+#         rgb_color: [255, 0, 255]  # Magenta
+#       light.kitchen_hue:
+#         state: on
+#         brightness: 200
+#         rgb_color: [0, 255, 255]  # Cyan
+#   
+#   - name: Party Mode - Chill
+#     entities:
+#       light.living_room_hue:
+#         state: on
+#         brightness: 150
+#         rgb_color: [100, 100, 255]  # Soft blue
+#       light.kitchen_hue:
+#         state: on
+#         brightness: 100
+#         rgb_color: [255, 150, 100]  # Warm orange
+
+# Future: Automation to sync lights with music mood
+# automation:
+#   - id: sync_lights_with_mood
+#     alias: "Lighting: Sync with Music Mood"
+#     trigger:
+#       - platform: state
+#         entity_id: input_select.music_mood
+#     action:
+#       - choose:
+#           - conditions:
+#               - condition: state
+#                 entity_id: input_select.music_mood
+#                 state: "Energetic"
+#             sequence:
+#               - service: scene.turn_on
+#                 target:
+#                   entity_id: scene.party_mode_energetic
+#           
+#           - conditions:
+#               - condition: state
+#                 entity_id: input_select.music_mood
+#                 state: "Chill"
+#             sequence:
+#               - service: scene.turn_on
+#                 target:
+#                   entity_id: scene.party_mode_chill
+
+# Placeholder automation to remind about Hue integration
+automation:
+  - id: lighting_reminder
+    alias: "Lighting: Integration Reminder"
+    description: "Placeholder - Philips Hue not yet integrated"
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: system_log.write
+        data:
+          message: "Philips Hue integration pending - lighting package is placeholder only"
+          level: warning
+
+# TODO: 
+# 1. Install Philips Hue integration in Home Assistant
+# 2. Configure Hue lights and assign to rooms
+# 3. Create coordinated lighting scenes for each music mood
+# 4. Set up NFC tags to trigger specific lighting scenes
+# 5. Add ambient lighting effects synchronized with audio playback

@@ -1,0 +1,114 @@
+# Home Assistant Configuration Example
+# This demonstrates how to set up the package system for the NFC Party Controller
+
+# Enable package-based configuration
+homeassistant:
+  # Customize entity names and icons
+  customize: !include customize.yaml
+  
+  # Load all packages from the packages directory
+  packages: !include_dir_named packages/
+
+# Enable default integrations
+default_config:
+
+# HTTP configuration (adjust for your security needs)
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+
+# Enable frontend
+frontend:
+  themes: !include_dir_merge_named themes/
+
+# Enable Lovelace UI mode
+lovelace:
+  mode: yaml
+  # Optional: Load dashboards from files
+  dashboards:
+    nfc-party-control:
+      mode: yaml
+      title: Party Control
+      icon: mdi:party-popper
+      show_in_sidebar: true
+      filename: dashboards/party_control.yaml
+
+# Recorder - configure database retention
+recorder:
+  purge_keep_days: 7
+  commit_interval: 30
+  db_url: !secret db_url  # Optional: Use external database
+
+# History
+history:
+  include:
+    domains:
+      - media_player
+      - input_boolean
+      - input_select
+    entities:
+      - counter.songs_played_today
+      - sensor.nfc_party_controller_volume_pot
+
+# Logger - adjust logging levels
+logger:
+  default: info
+  logs:
+    homeassistant.components.esphome: debug
+    homeassistant.components.media_player: debug
+
+# Text-to-speech (optional)
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+# Example: Bang & Olufsen Integration
+# This should already be configured via the UI, but here's a reference
+# bang_olufsen:
+#   - host: 192.168.1.XXX  # Beoconnect Core IP
+#     model: Beoconnect Core
+#   - host: 192.168.1.XXX  # Beoplay M5 Office
+#     model: Beoplay M5
+#   - host: 192.168.1.XXX  # Beoplay M5 Kitchen
+#     model: Beoplay M5
+
+# Spotify integration (configure via UI)
+# Requires Spotify Developer account and registered app
+# spotify:
+#   client_id: !secret spotify_client_id
+#   client_secret: !secret spotify_client_secret
+
+# ESPHome integration (auto-discovered, configure via UI)
+# esphome:
+
+# Future: Philips Hue integration (configure via UI)
+# hue:
+#   bridges:
+#     - host: 192.168.1.XXX
+#       allow_unreachable: true
+#       allow_hue_groups: true
+
+# Mobile app integration (for iOS/Android control)
+mobile_app:
+
+# Cloud integration (optional - for remote access)
+# cloud:
+
+# System health
+system_health:
+
+# Person tracking (optional)
+# person:
+
+# Zone definition (optional)
+# zone:
+
+# Automation organization (if not using packages)
+# automation: !include automations.yaml
+# script: !include scripts.yaml
+# scene: !include scenes.yaml
+
+# Note: With the package system, most configuration is in packages/
+# This keeps configuration.yaml minimal and modular

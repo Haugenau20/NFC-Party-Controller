@@ -1,0 +1,154 @@
+# Audio Control Package
+# Multi-room audio management for Bang & Olufsen speakers
+
+# Scripts for audio control
+script:
+  # Multi-room audio grouping via Beolink
+  audio_group_all:
+    alias: "Audio: Group All Speakers"
+    description: "Join all B&O speakers via Beolink for synchronized playback"
+    sequence:
+      # Join kitchen and office to living room (Beoconnect Core)
+      # Adjust entity IDs to match your actual speakers
+      - service: media_player.join
+        target:
+          entity_id:
+            - media_player.kontor   # Office (Beoplay M5)
+            - media_player.køkken   # Kitchen (Beoplay M5)
+        data:
+          group_members:
+            - media_player.stue     # Living room (Beoconnect Core)
+      
+      - service: system_log.write
+        data:
+          message: "All speakers grouped via Beolink"
+          level: info
+
+  # Ungroup all speakers
+  audio_ungroup_all:
+    alias: "Audio: Ungroup All Speakers"
+    description: "Separate all B&O speakers for independent playback"
+    sequence:
+      - service: media_player.unjoin
+        target:
+          entity_id:
+            - media_player.kontor
+            - media_player.køkken
+            - media_player.stue
+      
+      - service: system_log.write
+        data:
+          message: "All speakers ungrouped"
+          level: info
+
+  # Synchronized volume control
+  audio_set_all_volume:
+    alias: "Audio: Set Volume for All Speakers"
+    description: "Set the same volume on all speakers"
+    fields:
+      volume_level:
+        description: "Volume level (0-100)"
+        example: 50
+    sequence:
+      - service: media_player.volume_set
+        target:
+          entity_id:
+            - media_player.kontor
+            - media_player.køkken
+            - media_player.stue
+        data:
+          volume_level: "{{ volume_level | float / 100 }}"
+
+# Automation: Volume potentiometer control
+automation:
+  - id: volume_pot_control
+    alias: "Audio: Volume Potentiometer Control"
+    description: "Update speaker volume based on ESP32 potentiometer"
+    trigger:
+      - platform: state
+        entity_id: sensor.nfc_party_controller_volume_pot
+    condition:
+      # Rate limiting: only update if change is significant
+      - condition: template
+        value_template: >
+          {{ (trigger.to_state.state | float - trigger.from_state.state | float) | abs > 3 }}
+    action:
+      # Update party volume helper
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.party_volume
+        data:
+          value: "{{ trigger.to_state.state | float }}"
+      
+      # Apply to active speakers if party mode is on
+      - condition: state
+        entity_id: input_boolean.party_mode
+        state: "on"
+      
+      - service: media_player.volume_set
+        target:
+          entity_id: media_player.stue
+        data:
+          volume_level: "{{ trigger.to_state.state | float / 100 }}"
+
+  # Button 1: Play/Pause toggle
+  - id: button_1_play_pause
+    alias: "Audio: Button 1 - Play/Pause"
+    trigger:
+      - platform: event
+        event_type: esphome.nfc_controller_button
+        event_data:
+          button: 1
+    action:
+      - service: media_player.media_play_pause
+        target:
+          entity_id: media_player.stue
+
+  # Button 2: Next track
+  - id: button_2_next_track
+    alias: "Audio: Button 2 - Next Track"
+    trigger:
+      - platform: event
+        event_type: esphome.nfc_controller_button
+        event_data:
+          button: 2
+    action:
+      - service: media_player.media_next_track
+        target:
+          entity_id: media_player.stue
+
+  # Button 3: Group/Ungroup toggle
+  - id: button_3_group_toggle
+    alias: "Audio: Button 3 - Group Toggle"
+    trigger:
+      - platform: event
+        event_type: esphome.nfc_controller_button
+        event_data:
+          button: 3
+    action:
+      # Toggle between grouped and ungrouped
+      # This is a simplified version - enhance based on actual state detection
+      - service: script.toggle
+        target:
+          entity_id: script.audio_group_all
+
+# Template sensor: Audio system status
+sensor:
+  - platform: template
+    sensors:
+      audio_system_status:
+        friendly_name: "Audio System Status"
+        value_template: >
+          {% if is_state('media_player.stue', 'playing') %}
+            Playing - {{ state_attr('media_player.stue', 'media_title') }}
+          {% elif is_state('media_player.stue', 'paused') %}
+            Paused
+          {% else %}
+            Idle
+          {% endif %}
+        icon_template: >
+          {% if is_state('media_player.stue', 'playing') %}
+            mdi:music-note
+          {% else %}
+            mdi:music-note-off
+          {% endif %}

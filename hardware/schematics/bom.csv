@@ -1,0 +1,15 @@
+Ref,Qty,Component,Value,Description,Footprint,Supplier,Part Number,Unit Cost,Total Cost
+U1,1,Microcontroller,ESP32 DevKitC,ESP32 development board with USB-C,DevKit,AliExpress/Amazon,-,$10.00,$10.00
+U2,1,NFC Reader,PN532,NFC/RFID module with I2C interface,Module,AliExpress,PN532-I2C,$6.00,$6.00
+SW1,1,Tactile Switch,12mm,Push button for play/pause control,THT 12mm,Local,-,$0.50,$0.50
+SW2,1,Tactile Switch,12mm,Push button for next track,THT 12mm,Local,-,$0.50,$0.50
+SW3,1,Tactile Switch,12mm,Push button for group toggle,THT 12mm,Local,-,$0.50,$0.50
+R1,1,Potentiometer,10kΩ,Linear potentiometer for volume control,PCB mount,Local,-,$1.50,$1.50
+BZ1,1,Active Buzzer,5V,Piezo buzzer for audio feedback,THT,Local,-,$0.80,$0.80
+Q1,1,MOSFET,IRLD120,N-Channel logic-level MOSFET (60V 3.1A),TO-220,DigiKey,IRLD120PBF,$0.50,$0.50
+D1,1,Schottky Diode,1N5818,Flyback protection diode (30V 1A),DO-41,DigiKey,1N5818,$0.20,$0.20
+-,1,Breadboard,830 point,Solderless breadboard for prototyping,-,Local,-,$3.00,$3.00
+-,1,Jumper Wire Kit,M-M/M-F,Assorted jumper wires,-,Amazon,-,$3.00,$3.00
+-,150,NFC Tags,NTAG215,30mm circular NFC stickers on roll,-,Amazon,-,$20.00,$20.00
+-,1,USB-C Cable,1m,USB-C cable for programming and power,-,Local,-,$3.00,$3.00
+,,,,,,,TOTAL:,$50.00

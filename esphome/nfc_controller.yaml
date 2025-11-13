@@ -1,0 +1,180 @@
+# NFC Party Controller - ESP32 Configuration
+# Hardware: ESP32 USB-C IoT DevKitC
+# Components: PN532 NFC Reader, Buttons, Potentiometer, Buzzer
+
+substitutions:
+  device_name: nfc-party-controller
+  friendly_name: "NFC Party Controller"
+  device_description: "ESP32-based NFC controller for multi-room audio and party automation"
+
+esphome:
+  name: ${device_name}
+  comment: ${device_description}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# WiFi configuration from secrets.yaml
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  
+  # Enable fallback hotspot for initial setup
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret ap_password
+
+# Captive portal for easy WiFi configuration
+captive_portal:
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+# OTA updates
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# Web server for debugging (optional - disable in production for security)
+# web_server:
+#   port: 80
+
+# I2C bus for PN532 NFC reader
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true
+  id: i2c_bus
+
+# PN532 NFC Reader
+pn532_i2c:
+  id: pn532_board
+  on_tag:
+    then:
+      # Send tag UID to Home Assistant for processing
+      # HA will map tag IDs to specific actions using native tag management
+      - homeassistant.tag_scanned: !lambda 'return x;'
+      # Provide audio feedback - short beep for tag scan
+      - output.turn_on: buzzer_output
+      - delay: 100ms
+      - output.turn_off: buzzer_output
+
+# Buzzer for audio feedback
+# Active buzzer (fixed frequency) connected to GPIO23 via 5V MOSFET circuit
+# MOSFET: IRLD120 with 1N5818 Schottky flyback diode
+# Buzzer: 5V power rail, ground switched by MOSFET when GPIO23 is HIGH
+output:
+  - platform: gpio
+    pin: GPIO23
+    id: buzzer_output
+
+# Analog input for volume potentiometer
+# Using specific parameters for responsive control:
+# - 11db attenuation for full range
+# - Sliding window average for smoothing
+# - Delta filter to reduce noise
+sensor:
+  # Volume potentiometer
+  # - platform: adc
+  #   pin: GPIO34
+  #   name: "${friendly_name} Volume Pot"
+  #   id: volume_pot
+  #   attenuation: 11db
+  #   update_interval: 100ms
+  #   filters:
+  #     # Sliding window average for smoothing
+  #     - sliding_window_moving_average:
+  #         window_size: 5
+  #         send_every: 5
+  #     # Delta filter - only send updates when change > 2%
+  #     - delta: 2.0
+  #     # Convert to percentage (0-100)
+  #     - calibrate_linear:
+  #         - 0.0 -> 0.0
+  #         - 3.3 -> 100.0
+  #     - clamp:
+  #         min_value: 0
+  #         max_value: 100
+  #         ignore_out_of_range: true
+  #   unit_of_measurement: "%"
+  #   accuracy_decimals: 0
+
+  # WiFi signal strength
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Signal"
+    update_interval: 60s
+
+  # Uptime sensor
+  - platform: uptime
+    name: "${friendly_name} Uptime"
+    update_interval: 60s
+
+# GPIO buttons for radio control and channel selection
+# binary_sensor:
+#   # Radio control buttons
+#   - platform: gpio
+#     pin:
+#       number: GPIO18
+#       mode: INPUT_PULLUP
+#       inverted: true
+#     name: "${friendly_name} Button 1"
+#     id: button_1
+#     on_press:
+#       - homeassistant.event:
+#           event: esphome.nfc_controller_button
+#           data:
+#             button: 1
+#             action: press
+
+#   - platform: gpio
+#     pin:
+#       number: GPIO19
+#       mode: INPUT_PULLUP
+#       inverted: true
+#     name: "${friendly_name} Button 2"
+#     id: button_2
+#     on_press:
+#       - homeassistant.event:
+#           event: esphome.nfc_controller_button
+#           data:
+#             button: 2
+#             action: press
+
+#   - platform: gpio
+#     pin:
+#       number: GPIO5
+#       mode: INPUT_PULLUP
+#       inverted: true
+#     name: "${friendly_name} Button 3"
+#     id: button_3
+#     on_press:
+#       - homeassistant.event:
+#           event: esphome.nfc_controller_button
+#           data:
+#             button: 3
+#             action: press
+
+# Status LED (using built-in LED for debugging)
+status_led:
+  pin: GPIO2
+
+# Text sensors for device info
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "${friendly_name} IP Address"
+    ssid:
+      name: "${friendly_name} Connected SSID"
+    mac_address:
+      name: "${friendly_name} MAC Address"
+
+  - platform: version
+    name: "${friendly_name} ESPHome Version"

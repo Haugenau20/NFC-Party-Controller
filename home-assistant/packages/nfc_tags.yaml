@@ -1,0 +1,133 @@
+# NFC Tags Package
+# Event-based NFC tag handling and automation framework
+
+# Automation: NFC Tag Scanned Event Handler
+automation:
+  - id: nfc_tag_scanned_router
+    alias: "NFC: Tag Scanned Router"
+    description: "Routes NFC tag scans to appropriate handlers based on tag ID"
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+    action:
+      # Log all tag scans for debugging
+      - service: system_log.write
+        data:
+          message: "NFC tag scanned: {{ trigger.event.data.tag_id }}"
+          level: info
+      
+      # Increment song counter (if tag is music-related)
+      # This is a placeholder - will be refined per tag type
+      - service: counter.increment
+        target:
+          entity_id: counter.songs_played_today
+      
+      # Provide audio feedback via ESP32 buzzer
+      # (This requires custom ESPHome service - implement as needed)
+      
+      # Route to specific automations based on tag ID
+      # Use choose for conditional routing
+      - choose:
+          # Example: Special "Party Mode Toggle" tag
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'YOUR-PARTY-TAG-ID-HERE' }}"
+            sequence:
+              - service: input_boolean.toggle
+                target:
+                  entity_id: input_boolean.party_mode
+        
+        # Default action if no specific tag matched
+        default:
+          - service: system_log.write
+            data:
+              message: "Unknown NFC tag: {{ trigger.event.data.tag_id }}"
+              level: warning
+
+  # Example: Playlist tag automation template
+  # Duplicate and modify for each playlist tag
+  - id: nfc_tag_playlist_example
+    alias: "NFC: Play Energetic Playlist"
+    description: "Triggered by specific NFC tag to play energetic music"
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "EXAMPLE-TAG-ID-001"  # Replace with actual tag UID
+    condition:
+      # Optional: Only during certain times or party mode
+      - condition: state
+        entity_id: input_boolean.party_mode
+        state: "on"
+    action:
+      # Set mood
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.music_mood
+        data:
+          option: "Energetic"
+      
+      # Start Spotify playlist on Bang & Olufsen speaker
+      # Adjust entity IDs to match your setup
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.stue  # Beoconnect Core (Living room)
+        data:
+          media_content_type: playlist
+          media_content_id: "spotify:playlist:YOUR_PLAYLIST_ID"
+      
+      # Set volume from party mode helper
+      - service: media_player.volume_set
+        target:
+          entity_id: media_player.stue
+        data:
+          volume_level: "{{ states('input_number.party_volume') | float / 100 }}"
+
+# Script: Generic play playlist helper
+script:
+  nfc_play_spotify_playlist:
+    alias: "NFC: Play Spotify Playlist"
+    description: "Generic script to play a Spotify playlist on specified speakers"
+    fields:
+      playlist_uri:
+        description: "Spotify playlist URI (e.g., spotify:playlist:xxxxx)"
+        example: "spotify:playlist:37i9dQZF1DXaXB8fQg7xif"
+      speaker:
+        description: "Media player entity ID"
+        example: "media_player.stue"
+      volume:
+        description: "Volume level (0-100)"
+        example: 70
+      mood:
+        description: "Music mood to set"
+        example: "Energetic"
+    sequence:
+      # Set music mood
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.music_mood
+        data:
+          option: "{{ mood }}"
+      
+      # Play playlist
+      - service: media_player.play_media
+        target:
+          entity_id: "{{ speaker }}"
+        data:
+          media_content_type: playlist
+          media_content_id: "{{ playlist_uri }}"
+      
+      # Set volume
+      - service: media_player.volume_set
+        target:
+          entity_id: "{{ speaker }}"
+        data:
+          volume_level: "{{ volume | float / 100 }}"
+      
+      # Increment counter
+      - service: counter.increment
+        target:
+          entity_id: counter.songs_played_today
+
+# TODO: Add individual tag automations as tags are assigned
+# Use tag_mapping.csv to track tag IDs and their assigned actions

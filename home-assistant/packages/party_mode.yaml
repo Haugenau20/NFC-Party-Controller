@@ -1,0 +1,125 @@
+# Party Mode Package
+# Manages party mode state, helpers, and coordinated automation
+
+# Input helpers for party mode control
+input_boolean:
+  party_mode:
+    name: Party Mode Active
+    icon: mdi:party-popper
+    initial: false
+
+input_select:
+  music_mood:
+    name: Music Mood
+    options:
+      - Energetic
+      - Chill
+      - Romantic
+      - Focus
+      - Off
+    initial: Off
+    icon: mdi:music
+
+input_number:
+  party_volume:
+    name: Party Volume
+    min: 0
+    max: 100
+    step: 5
+    initial: 70
+    unit_of_measurement: "%"
+    icon: mdi:volume-high
+
+# Counter for tracking songs played
+counter:
+  songs_played_today:
+    name: Songs Played Today
+    icon: mdi:music-note
+    initial: 0
+    step: 1
+
+# Automation: Reset song counter at midnight
+automation:
+  - id: reset_song_counter_daily
+    alias: "Party Mode: Reset Song Counter at Midnight"
+    trigger:
+      - platform: time
+        at: "00:00:00"
+    action:
+      - service: counter.reset
+        target:
+          entity_id: counter.songs_played_today
+
+  # Automation: Party mode activation sequence
+  - id: party_mode_on
+    alias: "Party Mode: Activate"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.party_mode
+        to: "on"
+    action:
+      # Log party mode activation
+      - service: system_log.write
+        data:
+          message: "Party mode activated"
+          level: info
+      
+      # Future: Trigger lighting scenes here
+      # - service: light.turn_on
+      #   target:
+      #     entity_id: light.living_room
+      #   data:
+      #     brightness: 255
+      #     rgb_color: [255, 0, 255]
+      
+      # Future: Set default volume
+      # - service: media_player.volume_set
+      #   target:
+      #     entity_id: media_player.stue
+      #   data:
+      #     volume_level: "{{ states('input_number.party_volume') | float / 100 }}"
+
+  # Automation: Party mode deactivation sequence
+  - id: party_mode_off
+    alias: "Party Mode: Deactivate"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.party_mode
+        to: "off"
+    action:
+      # Log party mode deactivation
+      - service: system_log.write
+        data:
+          message: "Party mode deactivated"
+          level: info
+      
+      # Reset music mood
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.music_mood
+        data:
+          option: "Off"
+      
+      # Future: Reset lighting to normal
+      # - service: scene.turn_on
+      #   target:
+      #     entity_id: scene.normal_lighting
+
+# Template sensor: Party mode status text
+sensor:
+  - platform: template
+    sensors:
+      party_mode_status:
+        friendly_name: "Party Mode Status"
+        value_template: >
+          {% if is_state('input_boolean.party_mode', 'on') %}
+            Active - {{ states('input_select.music_mood') }} mode
+          {% else %}
+            Inactive
+          {% endif %}
+        icon_template: >
+          {% if is_state('input_boolean.party_mode', 'on') %}
+            mdi:party-popper
+          {% else %}
+            mdi:sleep
+          {% endif %}
