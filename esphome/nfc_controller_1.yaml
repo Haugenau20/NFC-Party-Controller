@@ -1,0 +1,16 @@
+# NFC Party Controller - ESP32 #1 (Basic)
+# Hardware: ESP32 USB-C IoT DevKitC
+# Components: PN532 NFC Reader, Buzzer
+
+substitutions:
+  device_name: nfc-party-controller-1
+  friendly_name: "NFC Party Controller 1"
+  device_description: "ESP32-based NFC controller (Basic) for multi-room audio and party automation"
+
+esphome:
+  name: ${device_name}
+  comment: ${device_description}
+
+# Import all common configuration
+packages:
+  common: !include common.yaml

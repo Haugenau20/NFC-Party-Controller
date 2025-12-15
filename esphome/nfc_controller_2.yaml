@@ -1,0 +1,43 @@
+# NFC Party Controller - ESP32 #2 (With Volume Control)
+# Hardware: ESP32 USB-C IoT DevKitC
+# Components: PN532 NFC Reader, Buzzer, Volume Potentiometer
+
+substitutions:
+  device_name: nfc-party-controller-2
+  friendly_name: "NFC Party Controller 2"
+  device_description: "ESP32-based NFC controller (With Volume) for multi-room audio and party automation"
+
+esphome:
+  name: ${device_name}
+  comment: ${device_description}
+
+# Import all common configuration
+packages:
+  common: !include common.yaml
+
+# Additional sensor specific to ESP32 #2
+sensor:
+  # Volume potentiometer
+  - platform: adc
+    pin: GPIO34
+    name: "${friendly_name} Volume Pot"
+    id: volume_pot
+    attenuation: 11db
+    update_interval: 100ms
+    filters:
+      # Sliding window average for smoothing
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 5
+      # Delta filter - only send updates when change > 2%
+      - delta: 2.0
+      # Convert to percentage (0-100)
+      - calibrate_linear:
+          - 0.0 -> 0.0
+          - 3.3 -> 100.0
+      - clamp:
+          min_value: 0
+          max_value: 100
+          ignore_out_of_range: true
+    unit_of_measurement: "%"
+    accuracy_decimals: 0

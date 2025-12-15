@@ -1,0 +1,152 @@
+# Common configuration for all NFC Party Controller ESP32 devices
+# This file contains shared components: WiFi, API, OTA, PN532, and Buzzer
+
+# ESP32 board configuration
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# WiFi configuration from secrets.yaml
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot for initial setup
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret ap_password
+
+# Captive portal for easy WiFi configuration
+captive_portal:
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+# OTA updates
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# I2C bus for PN532 NFC reader
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true
+  id: i2c_bus
+
+# PN532 NFC Reader
+pn532_i2c:
+  id: pn532_board
+  on_tag:
+    then:
+      # Send tag UID to Home Assistant for processing
+      # HA will map tag IDs to specific actions using native tag management
+      - homeassistant.tag_scanned: !lambda 'return x;'
+      # Provide audio feedback - quick beep for tag scan
+      - rtttl.play: 'scan:d=4,o=5,b=100:16e6'
+
+# Passive buzzer PWM output
+# 5V passive buzzer connected to GPIO23 via N-channel MOSFET circuit
+# MOSFET: 2N7000 with 1N5819 Schottky flyback diode
+# GPIO23 -> 1kΩ resistor -> MOSFET Gate
+# MOSFET Source -> GND
+# MOSFET Drain -> Buzzer (-) negative
+# Buzzer (+) positive -> 5V
+# 1N5819 diode across buzzer (cathode to 5V, anode to drain)
+output:
+  - platform: ledc
+    pin: GPIO23
+    id: buzzer_output
+
+# RTTTL component for playing tones and melodies
+rtttl:
+  output: buzzer_output
+  id: buzzer_rtttl
+
+# Scripts for success and failure sounds
+script:
+  # Play a random success sound (1 of 4 options)
+  - id: play_success
+    then:
+      - lambda: |-
+          int sound = rand() % 4;
+          if (sound == 0) {
+            // Level Up - ascending 5-note victory
+            id(buzzer_rtttl).play("levelup:d=4,o=5,b=180:16c6,16d6,16e6,16g6,8c7");
+          } else if (sound == 1) {
+            // Party Horn - festive blast
+            id(buzzer_rtttl).play("party:d=4,o=6,b=250:16c,16e,16g,8c7");
+          } else if (sound == 2) {
+            // Mario - classic victory
+            id(buzzer_rtttl).play("mario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p");
+          } else {
+            // Fanfare - triumphant
+            id(buzzer_rtttl).play("fanfare:d=4,o=5,b=200:8g6,8g6,8g6,2c7");
+          }
+
+  # Play failure/error sound
+  - id: play_failure
+    then:
+      - rtttl.play: 'buzz:d=8,o=4,b=120:16a,16a,16a,16a'
+
+  # Play master card sound (admin/reset confirmation)
+  - id: play_master
+    then:
+      - rtttl.play: 'master:d=4,o=5,b=180:8c6,8p,8c6,8p,8c6'
+
+# Buttons to trigger sounds from Home Assistant
+# These will appear as button entities that can be pressed from automations
+button:
+  - platform: template
+    name: "Play Success"
+    id: button_play_success
+    on_press:
+      - script.execute: play_success
+
+  - platform: template
+    name: "Play Failure"
+    id: button_play_failure
+    on_press:
+      - script.execute: play_failure
+
+  - platform: template
+    name: "Play Master"
+    id: button_play_master
+    on_press:
+      - script.execute: play_master
+
+# Common sensors for both devices
+sensor:
+  # WiFi signal strength
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Signal"
+    update_interval: 60s
+
+  # Uptime sensor
+  - platform: uptime
+    name: "${friendly_name} Uptime"
+    update_interval: 60s
+
+# Status LED (using built-in LED for debugging)
+status_led:
+  pin: GPIO2
+
+# Text sensors for device info
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "${friendly_name} IP Address"
+    ssid:
+      name: "${friendly_name} Connected SSID"
+    mac_address:
+      name: "${friendly_name} MAC Address"
+
+  - platform: version
+    name: "${friendly_name} ESPHome Version"

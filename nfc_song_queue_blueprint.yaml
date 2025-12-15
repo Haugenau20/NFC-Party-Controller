@@ -1,0 +1,160 @@
+blueprint:
+  name: NFC Song Queue with Limit
+  description: Add a song to Spotify queue via NFC tag. Device 1 has 3-song limit, Device 2 plays immediately.
+  domain: automation
+  input:
+    song_name:
+      name: Song Name
+      description: Name of the song for identification
+      selector:
+        text:
+    tag_id:
+      name: NFC Tag ID
+      description: The ID of the NFC tag
+      selector:
+        text:
+    spotify_uri:
+      name: Spotify URI
+      description: The Spotify track URI (spotify:track:xxxxx)
+      selector:
+        text:
+    device_1_id:
+      name: Device 1 ID
+      description: Device ID for ESP32 #1
+      default: "8dc4434bc67e5ff7970e50337b15e8da"
+      selector:
+        text:
+    device_2_id:
+      name: Device 2 ID
+      description: Device ID for ESP32 #2
+      default: "c2c429cbccd32c459c05662a24505349"
+      selector:
+        text:
+    device_1_account:
+      name: Device 1 Spotify Account
+      description: Spotcast account ID for Device 1
+      default: "01KACG05YGPRDMAJDPE29KDBKV"
+      selector:
+        text:
+    device_2_account:
+      name: Device 2 Spotify Account
+      description: Spotcast account ID for Device 2
+      default: "01KCE37RQSTJ0G8RREGMB0Y2XQ"
+      selector:
+        text:
+    device_2_media_player:
+      name: Device 2 Media Player
+      description: Device ID for media player to skip track on Device 2
+      default: "ff4e0a731f23faad76468c27fbd16e4e"
+      selector:
+        text:
+
+trigger:
+  - platform: tag
+    tag_id: !input tag_id
+
+action:
+  - variables:
+      spotify_uri: !input spotify_uri
+      queue_list: "{{ states('input_text.nfc_queue_tracker') }}"
+      device_1_id: !input device_1_id
+      device_2_id: !input device_2_id
+      device_1_account: !input device_1_account
+      device_2_account: !input device_2_account
+      device_2_media_player: !input device_2_media_player
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_1_id }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ spotify_uri in queue_list }}"
+                sequence:
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 0
+                      milliseconds: 300
+                  - action: button.press
+                    data: {}
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_failure
+              - conditions:
+                  - condition: template
+                    value_template: "{{ queue_list.count(',') >= 2 }}"
+                sequence:
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 0
+                      milliseconds: 300
+                  - action: button.press
+                    data: {}
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_failure
+              - conditions:
+                  - condition: template
+                    value_template: "{{ not is_state('media_player.spotify_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotify_soren_kjaedegaard_haug', 'paused') }}"
+                sequence:
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 0
+                      milliseconds: 300
+                  - action: button.press
+                    data: {}
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_failure
+            default:
+              - action: spotcast.add_to_queue
+                data:
+                  account: "{{ device_1_account }}"
+                  spotify_uris: "{{ spotify_uri }}"
+              - action: input_text.set_value
+                target:
+                  entity_id: input_text.nfc_queue_tracker
+                data:
+                  value: "{% if queue_list == '' %}{{ spotify_uri }}{% else %}{{ queue_list }},{{ spotify_uri }}{% endif %}"
+              - action: button.press
+                data: {}
+                target:
+                  entity_id: button.nfc_party_controller_1_play_success
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_2_id }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ not is_state('media_player.spotify_soren_nytar', 'playing') and not is_state('media_player.spotify_soren_nytar', 'paused') }}"
+                sequence:
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 0
+                      milliseconds: 300
+                  - action: button.press
+                    data: {}
+                    target:
+                      entity_id: button.nfc_party_controller_2_play_failure
+            default:
+              - action: spotcast.add_to_queue
+                data:
+                  spotify_uris: "{{ spotify_uri }}"
+                  account: "{{ device_2_account }}"
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 0
+                  milliseconds: 500
+              - action: media_player.media_next_track
+                target:
+                  device_id: "{{ device_2_media_player }}"
+              - action: button.press
+                data: {}
+                target:
+                  entity_id: button.nfc_party_controller_2_play_success
+
+mode: single
