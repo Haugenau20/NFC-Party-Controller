@@ -1,0 +1,52 @@
+alias: "NFC: Toggle Playlist Permission on Device 1"
+description: "Toggles whether playlists are allowed on Device 1 when master card is tapped"
+trigger:
+  - platform: tag
+    tag_id: "04-B8-15-AF-7A-26-81"
+
+action:
+  - variables:
+      device_1_id: "8dc4434bc67e5ff7970e50337b15e8da"
+      device_2_id: "c2c429cbccd32c459c05662a24505349"
+
+  - choose:
+      # Only respond to Device 1
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_1_id }}"
+        sequence:
+          # Toggle the playlist permission
+          - service: input_boolean.toggle
+            target:
+              entity_id: input_boolean.playlist_allowed_on_device_1
+
+          # Play master sound
+          - delay:
+              milliseconds: 300
+          - service: button.press
+            target:
+              entity_id: button.nfc_party_controller_1_play_master
+
+          # Wait for master sound to finish (roughly)
+          - delay:
+              milliseconds: 800
+
+          # Play master_on or master_off based on new state
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.playlist_allowed_on_device_1
+                    state: "on"
+                sequence:
+                  - service: button.press
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_master_on
+            default:
+              - service: button.press
+                target:
+                  entity_id: button.nfc_party_controller_1_play_master_off
+
+    # Device 2 - do nothing (ignore)
+    default: []
+
+mode: single

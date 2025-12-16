@@ -1,0 +1,9 @@
+use_blueprint:
+  path: nfc_playlist_switch_blueprint.yaml
+  input:
+    playlist_name: "New Year Playlist 2"
+    tag_id: "04-AA-65-AF-7A-26-81"
+    spotify_uri: "spotify:playlist:1P3TgpMZ19Owy3oXWhQj52"
+    device_1_account: "01KACG05YGPRDMAJDPE29KDBKV"
+    device_1_media_player: "media_player.stue_1140714430_spotcast"
+    base_playlist_helper: "input_text.base_playlist_uri"

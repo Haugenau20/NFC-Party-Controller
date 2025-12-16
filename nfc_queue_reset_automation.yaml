@@ -1,0 +1,44 @@
+alias: Admin - Queue Reset Card
+description: Clears the NFC queue tracker
+triggers:
+  - trigger: tag
+    tag_id: 04-C8-F5-AE-7A-26-81
+conditions: []
+actions:
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.nfc_queue_tracker
+    data:
+      value: ""
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.device_id ==
+              '8dc4434bc67e5ff7970e50337b15e8da' }}
+        sequence:
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 0
+              milliseconds: 300
+          - action: button.press
+            data: {}
+            target:
+              entity_id: button.nfc_party_controller_1_play_master
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.device_id ==
+              'c2c429cbccd32c459c05662a24505349' }}
+        sequence:
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 0
+              milliseconds: 300
+          - action: button.press
+            data: {}
+            target:
+              entity_id: button.nfc_party_controller_2_play_master
+mode: single

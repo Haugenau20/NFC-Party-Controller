@@ -98,15 +98,60 @@ action:
                   - condition: template
                     value_template: "{{ not is_state('media_player.spotify_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotify_soren_kjaedegaard_haug', 'paused') }}"
                 sequence:
-                  - delay:
-                      hours: 0
-                      minutes: 0
-                      seconds: 0
-                      milliseconds: 300
-                  - action: button.press
-                    data: {}
-                    target:
-                      entity_id: button.nfc_party_controller_1_play_failure
+                  # Validate and get base playlist URI (default to Playlist 1 if invalid)
+                  - variables:
+                      base_playlist_uri: >
+                        {% set uri = states('input_text.base_playlist_uri') %}
+                        {% if uri in ['spotify:playlist:3XXQEDPWBEKjgSpAJur8YP', 'spotify:playlist:1P3TgpMZ19Owy3oXWhQj52'] %}
+                          {{ uri }}
+                        {% else %}
+                          spotify:playlist:3XXQEDPWBEKjgSpAJur8YP
+                        {% endif %}
+                  # Start base playlist to establish playback session
+                  - action: spotcast.play_media
+                    data:
+                      media_player:
+                        entity_id: media_player.stue_1140714430_spotcast
+                      spotify_uri: "{{ base_playlist_uri }}"
+                      account: "{{ device_1_account }}"
+                      data:
+                        shuffle: true
+                        random: true
+                  # Wait for session to establish (up to 12 seconds)
+                  - wait_template: "{{ is_state('media_player.spotify_soren_kjaedegaard_haug', 'playing') or is_state('media_player.spotify_soren_kjaedegaard_haug', 'paused') }}"
+                    timeout:
+                      seconds: 20
+                    continue_on_timeout: false
+                  # Check if wait was successful (not timed out)
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ wait.completed }}"
+                        sequence:
+                          # Queue the tapped song
+                          - action: spotcast.add_to_queue
+                            data:
+                              account: "{{ device_1_account }}"
+                              spotify_uris: "{{ spotify_uri }}"
+                          # Update queue tracker
+                          - action: input_text.set_value
+                            target:
+                              entity_id: input_text.nfc_queue_tracker
+                            data:
+                              value: "{% if queue_list == '' %}{{ spotify_uri }}{% else %}{{ queue_list }},{{ spotify_uri }}{% endif %}"
+                          # Play success sound
+                          - delay:
+                              milliseconds: 300
+                          - action: button.press
+                            target:
+                              entity_id: button.nfc_party_controller_1_play_success
+                    # Session failed to establish - play failure sound
+                    default:
+                      - delay:
+                          milliseconds: 300
+                      - action: button.press
+                        target:
+                          entity_id: button.nfc_party_controller_1_play_failure
             default:
               - action: spotcast.add_to_queue
                 data:
@@ -130,15 +175,19 @@ action:
                   - condition: template
                     value_template: "{{ not is_state('media_player.spotify_soren_nytar', 'playing') and not is_state('media_player.spotify_soren_nytar', 'paused') }}"
                 sequence:
+                  # Start playing the tapped song/playlist to establish session
+                  - action: spotcast.play_media
+                    data:
+                      media_player:
+                        entity_id: media_player.kokken_31fi44dypurzlvw6e6ftr6mu673y_spotcast
+                      spotify_uri: "{{ spotify_uri }}"
+                      account: "{{ device_2_account }}"
+                  # Play success sound
                   - delay:
-                      hours: 0
-                      minutes: 0
-                      seconds: 0
                       milliseconds: 300
                   - action: button.press
-                    data: {}
                     target:
-                      entity_id: button.nfc_party_controller_2_play_failure
+                      entity_id: button.nfc_party_controller_2_play_success
             default:
               - action: spotcast.add_to_queue
                 data:

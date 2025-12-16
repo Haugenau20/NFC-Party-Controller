@@ -99,7 +99,17 @@ script:
   # Play master card sound (admin/reset confirmation)
   - id: play_master
     then:
-      - rtttl.play: 'master:d=4,o=5,b=180:8c6,8p,8c6,8p,8c6'
+      - rtttl.play: 'master:d=8,o=5,b=180:1c6'
+
+  # Play master on sound (rising frequency sweep)
+  - id: play_master_on
+    then:
+      - rtttl.play: 'master_on:d=16,o=4,b=240:c,d,e,f,g,a,b,c5,d5,e5,f5,g5'
+
+  # Play master off sound (falling frequency sweep)
+  - id: play_master_off
+    then:
+      - rtttl.play: 'master_off:d=16,o=5,b=240:g,f,e,d,c,b4,a4,g4,f4,e4,d4,c4'
 
 # Buttons to trigger sounds from Home Assistant
 # These will appear as button entities that can be pressed from automations
@@ -121,6 +131,18 @@ button:
     id: button_play_master
     on_press:
       - script.execute: play_master
+
+  - platform: template
+    name: "Play Master On"
+    id: button_play_master_on
+    on_press:
+      - script.execute: play_master_on
+
+  - platform: template
+    name: "Play Master Off"
+    id: button_play_master_off
+    on_press:
+      - script.execute: play_master_off
 
 # Common sensors for both devices
 sensor:
