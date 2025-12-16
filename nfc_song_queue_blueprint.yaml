@@ -117,11 +117,11 @@ action:
                       data:
                         shuffle: true
                         random: true
-                  # Wait for session to establish (up to 12 seconds)
+                  # Wait for session to establish (up to 20 seconds)
                   - wait_template: "{{ is_state('media_player.spotify_soren_kjaedegaard_haug', 'playing') or is_state('media_player.spotify_soren_kjaedegaard_haug', 'paused') }}"
                     timeout:
                       seconds: 20
-                    continue_on_timeout: false
+                    continue_on_timeout: true
                   # Check if wait was successful (not timed out)
                   - choose:
                       - conditions:

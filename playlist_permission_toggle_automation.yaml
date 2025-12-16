@@ -29,7 +29,7 @@ action:
 
           # Wait for master sound to finish (roughly)
           - delay:
-              milliseconds: 800
+              milliseconds: 2000
 
           # Play master_on or master_off based on new state
           - choose:
