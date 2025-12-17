@@ -22,22 +22,47 @@ sensor:
     pin: GPIO34
     name: "${friendly_name} Volume Pot"
     id: volume_pot
-    attenuation: 11db
+    attenuation: 12db
     update_interval: 100ms
     filters:
-      # Sliding window average for smoothing
+      # Sliding window average for smoothing (larger window to reduce noise)
       - sliding_window_moving_average:
-          window_size: 5
-          send_every: 5
-      # Delta filter - only send updates when change > 2%
-      - delta: 2.0
-      # Convert to percentage (0-100)
+          window_size: 10
+          send_every: 2
+      # Convert to percentage using actual measured voltage range
       - calibrate_linear:
-          - 0.0 -> 0.0
-          - 3.3 -> 100.0
+          - 0.142 -> 0.0
+          - 3.118 -> 100.0
       - clamp:
           min_value: 0
           max_value: 100
           ignore_out_of_range: true
+      # Only send updates when change > 3% (increased to ignore noise)
+      - delta: 2.0
     unit_of_measurement: "%"
     accuracy_decimals: 0
+
+# Physical button specific to ESP32 #2
+binary_sensor:
+  # Pause/resume button for Device 2 speaker (media_player.spotify_soren_nytar)
+  # Users tap NFC tags to play songs/playlists, then press this button to pause playback
+  - platform: gpio
+    pin:
+      number: GPIO18
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    name: "${friendly_name} Speaker Button"
+    id: speaker_button
+    filters:
+      # Debounce to prevent false triggers from mechanical bouncing
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        # Send event to Home Assistant for automation handling
+        - homeassistant.event:
+            event: esphome.speaker_button_pressed
+            data:
+              device: ${device_name}
