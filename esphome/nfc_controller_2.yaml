@@ -44,7 +44,8 @@ sensor:
 
 # Physical button specific to ESP32 #2
 binary_sensor:
-  # Speaker control button
+  # Pause/resume button for Device 2 speaker (media_player.spotify_soren_nytar)
+  # Users tap NFC tags to play songs/playlists, then press this button to pause playback
   - platform: gpio
     pin:
       number: GPIO18

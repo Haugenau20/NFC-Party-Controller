@@ -1,0 +1,16 @@
+automation:
+  - alias: "Device 2 - Pause/Resume Speaker via Button"
+    description: "Pauses or resumes playback on Device 2 speaker when physical button is pressed"
+
+    trigger:
+      - platform: event
+        event_type: esphome.speaker_button_pressed
+        event_data:
+          device: nfc-party-controller-2
+
+    action:
+      - action: media_player.media_play_pause
+        target:
+          entity_id: media_player.spotify_soren_nytar
+
+    mode: single
