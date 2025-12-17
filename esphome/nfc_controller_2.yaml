@@ -41,3 +41,27 @@ sensor:
           ignore_out_of_range: true
     unit_of_measurement: "%"
     accuracy_decimals: 0
+
+# Physical button specific to ESP32 #2
+binary_sensor:
+  # Speaker control button
+  - platform: gpio
+    pin:
+      number: GPIO18
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    name: "${friendly_name} Speaker Button"
+    id: speaker_button
+    filters:
+      # Debounce to prevent false triggers from mechanical bouncing
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        # Send event to Home Assistant for automation handling
+        - homeassistant.event:
+            event: esphome.speaker_button_pressed
+            data:
+              device: ${device_name}
