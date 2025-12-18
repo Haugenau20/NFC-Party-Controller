@@ -1,0 +1,16 @@
+automation:
+  - alias: "Admin - Restart Home Assistant"
+    description: "Admin-only: Restarts Home Assistant when admin NFC card is scanned"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER-ADMIN-RESTART-HA"  # Replace with actual admin NFC tag UID
+
+    action:
+      # Restart Home Assistant
+      # Note: HA will restart gracefully and come back online in ~1-2 minutes
+      - service: homeassistant.restart
+
+    mode: single  # Prevent multiple simultaneous restart attempts
