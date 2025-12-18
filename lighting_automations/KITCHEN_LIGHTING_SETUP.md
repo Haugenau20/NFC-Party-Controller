@@ -73,15 +73,20 @@ In Home Assistant:
    - Extra 2m lightstrip (if installed)
 3. Click each light and copy the **Entity ID**
 
-### 2. Get Your NFC Tag IDs
+### 2. Find Your Tag Friendly Names
 
-You need the tag UIDs for all 18 playlist cards. For each one:
-1. Scan the NFC card with Device 2 (Kitchen)
-2. Go to **Settings** → **System** → **Logs**
-3. Look for `tag_scanned` events
-4. Copy the `tag_id` value (e.g., `04-23-D3-2A-B1-49-80`)
+Since you already have all 80+ tags registered in Home Assistant's tag registry, this is easy!
 
-Or use the Home Assistant NFC tag manager if you've already registered them.
+**In Home Assistant:**
+1. Go to **Settings** → **Tags**
+2. Find your 18 playlist tags in the list
+3. Note down their friendly names (e.g., `rock_playlist`, `jazz_playlist`, etc.)
+
+**Tip:** If your tag friendly names follow a pattern, this will be quick! For example, if they're named like:
+- `80s_playlist`, `90s_playlist`, `00s_playlist`
+- `rock_playlist`, `jazz_playlist`, `house_playlist`
+
+Then you just need to match them to the placeholders in the automation file.
 
 ### 3. Update Placeholders
 
@@ -98,28 +103,37 @@ light.PLACEHOLDER_KITCHEN_AURELLE          → light.your_actual_aurelle_entity
 light.PLACEHOLDER_KITCHEN_LIGHTSTRIP       → light.your_actual_lightstrip_entity
 light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA → light.your_actual_extra_lightstrip_entity (OPTIONAL)
 
-# NFC Tag IDs - Energetic Category (14 playlists)
-PLACEHOLDER_TAG_80S        → your_80s_tag_uid
-PLACEHOLDER_TAG_90S        → your_90s_tag_uid
-PLACEHOLDER_TAG_00S        → your_00s_tag_uid
-PLACEHOLDER_TAG_10S        → your_10s_tag_uid
-PLACEHOLDER_TAG_20S        → your_20s_tag_uid
-PLACEHOLDER_TAG_DISCO      → your_disco_tag_uid
-PLACEHOLDER_TAG_ROCK       → your_rock_tag_uid
-PLACEHOLDER_TAG_HOUSE      → your_house_tag_uid
-PLACEHOLDER_TAG_HIPHOP     → your_hiphop_tag_uid
-PLACEHOLDER_TAG_PARTY      → your_party_tag_uid
-PLACEHOLDER_TAG_RAP        → your_rap_tag_uid
-PLACEHOLDER_TAG_SINGALONG  → your_singalong_tag_uid
-PLACEHOLDER_TAG_MGP        → your_mgp_tag_uid
-PLACEHOLDER_TAG_DANSK_TOP  → your_dansk_top_tag_uid
+# Tag friendly names - Replace with your actual tag names from Settings → Tags
+# These appear in TWO places: trigger section (line ~300) and conditions (line ~330+)
 
-# NFC Tag IDs - Chill Category (4 playlists)
-PLACEHOLDER_TAG_CHILL      → your_chill_tag_uid
-PLACEHOLDER_TAG_JAZZ       → your_jazz_tag_uid
-PLACEHOLDER_TAG_ELEVATOR   → your_elevator_tag_uid
-PLACEHOLDER_TAG_LOUNGE     → your_lounge_tag_uid
+# ENERGETIC CATEGORY (14 playlists)
+80s_playlist        → your_actual_80s_tag_name
+90s_playlist        → your_actual_90s_tag_name
+00s_playlist        → your_actual_00s_tag_name
+10s_playlist        → your_actual_10s_tag_name
+20s_playlist        → your_actual_20s_tag_name
+disco_playlist      → your_actual_disco_tag_name
+rock_playlist       → your_actual_rock_tag_name
+house_playlist      → your_actual_house_tag_name
+hiphop_playlist     → your_actual_hiphop_tag_name
+party_playlist      → your_actual_party_tag_name
+rap_playlist        → your_actual_rap_tag_name
+singalong_playlist  → your_actual_singalong_tag_name
+mgp_playlist        → your_actual_mgp_tag_name
+dansk_top_playlist  → your_actual_dansk_top_tag_name
+
+# CHILL CATEGORY (4 playlists)
+chill_playlist      → your_actual_chill_tag_name
+jazz_playlist       → your_actual_jazz_tag_name
+elevator_playlist   → your_actual_elevator_tag_name
+lounge_playlist     → your_actual_lounge_tag_name
 ```
+
+**Note:** Each tag name appears in TWO places in the file:
+1. In the `trigger:` section (~line 301-316)
+2. In the `conditions:` for each playlist (~line 331+)
+
+Use find/replace to update both at once!
 
 ### 4. Copy Files to Home Assistant
 
