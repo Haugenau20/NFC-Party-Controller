@@ -1,11 +1,11 @@
 # Living Room Party Lighting - Automated Time-Based Scenes with NFC Overrides
 #
 # PLACEHOLDERS TO REPLACE:
-# - light.PLACEHOLDER_LIVING_ROOM_SIGNE → Your Hue Signe floor lamp entity ID
-# - light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP → Your Hue Ensis "Up" light (ambient ceiling wash)
-# - light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN → Your Hue Ensis "Down" light (functional task lighting)
-# - light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP → Your Hue Beyond "Up" light (ambient table lamp)
-# - light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN → Your Hue Beyond "Down" light (table task lighting)
+# - light.hue_signe → Your Hue Signe floor lamp entity ID
+# - light.up → Your Hue Ensis "Up" light (ambient ceiling wash)
+# - light.down → Your Hue Ensis "Down" light (functional task lighting)
+# - light.sengelampe_op → Your Hue Beyond "Up" light (ambient table lamp)
+# - light.sengelampe_ned → Your Hue Beyond "Down" light (table task lighting)
 # - PLACEHOLDER_TAG_ARRIVAL → NFC tag UID for Arrival override
 # - PLACEHOLDER_TAG_DINNER → NFC tag UID for Dinner override
 # - PLACEHOLDER_TAG_POST_DINNER → NFC tag UID for Post-Dinner override
@@ -32,7 +32,7 @@ script:
       # Signe: Warm coral/peach accent (welcoming, not wild)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+          entity_id: light.hue_signe
         data:
           brightness: 190  # 75% brightness
           rgb_color: [255, 160, 122]  # Light coral
@@ -41,7 +41,7 @@ script:
       # Ensis Up: Warm amber ceiling wash
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+          entity_id: light.up
         data:
           brightness: 180  # 70% brightness
           rgb_color: [255, 180, 100]  # Warm amber
@@ -50,7 +50,7 @@ script:
       # Ensis Down: Warm white functional lighting
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+          entity_id: light.down
         data:
           brightness: 190  # 75% brightness
           rgb_color: [255, 220, 180]  # Soft warm white
@@ -59,7 +59,7 @@ script:
       # Beyond Up: Soft peachy accent (adds warmth)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP
+          entity_id: light.sengelampe_op
         data:
           brightness: 170  # 67% brightness
           rgb_color: [255, 180, 140]  # Soft peach
@@ -68,7 +68,7 @@ script:
       # Beyond Down: Warm white table lighting
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN
+          entity_id: light.sengelampe_ned
         data:
           brightness: 180  # 70% brightness
           rgb_color: [255, 220, 180]  # Soft warm white
@@ -81,7 +81,7 @@ script:
       # Signe: Dimmed warm amber (cozy but not distracting)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+          entity_id: light.hue_signe
         data:
           brightness: 140  # 55% brightness (dimmed from arrival)
           rgb_color: [255, 150, 80]  # Warm amber
@@ -90,7 +90,7 @@ script:
       # Ensis Up: Soft warm amber ceiling wash
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+          entity_id: light.up
         data:
           brightness: 130  # 51% brightness
           rgb_color: [255, 180, 100]  # Warm amber
@@ -99,7 +99,7 @@ script:
       # Ensis Down: Brighter warm white (functional for eating)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+          entity_id: light.down
         data:
           brightness: 200  # 78% brightness (need to see food!)
           rgb_color: [255, 220, 180]  # Warm white
@@ -108,7 +108,7 @@ script:
       # Beyond Up: Very soft warm amber accent
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP
+          entity_id: light.sengelampe_op
         data:
           brightness: 120  # 47% brightness (very subtle)
           rgb_color: [255, 170, 110]  # Warm amber
@@ -117,7 +117,7 @@ script:
       # Beyond Down: Warm white table lighting (functional)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN
+          entity_id: light.sengelampe_ned
         data:
           brightness: 190  # 75% brightness (table needs light)
           rgb_color: [255, 220, 180]  # Warm white
@@ -130,7 +130,7 @@ script:
       # Signe: Colorful warm amber gradient
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+          entity_id: light.hue_signe
         data:
           brightness: 180  # 70% brightness
           rgb_color: [255, 147, 41]  # Warm amber/orange
@@ -139,7 +139,7 @@ script:
       # Ensis Up: Ambient ceiling wash with warm amber
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+          entity_id: light.up
         data:
           brightness: 170  # 67% brightness
           rgb_color: [255, 147, 41]  # Warm amber/orange (matches Signe)
@@ -148,7 +148,7 @@ script:
       # Ensis Down: Functional warm white so people can see
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+          entity_id: light.down
         data:
           brightness: 180  # 70% brightness
           rgb_color: [255, 197, 143]  # Warm white (functional)
@@ -157,7 +157,7 @@ script:
       # Beyond Up: Warm amber accent
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP
+          entity_id: light.sengelampe_op
         data:
           brightness: 160  # 63% brightness
           rgb_color: [255, 147, 41]  # Warm amber (matches Signe)
@@ -166,7 +166,7 @@ script:
       # Beyond Down: Warm white table lighting
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN
+          entity_id: light.sengelampe_ned
         data:
           brightness: 170  # 67% brightness
           rgb_color: [255, 197, 143]  # Warm white
@@ -179,7 +179,7 @@ script:
       # Signe: Bold purple/magenta for energy
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+          entity_id: light.hue_signe
         data:
           brightness: 200  # 78% brightness
           rgb_color: [138, 43, 226]  # Deep purple/magenta
@@ -188,7 +188,7 @@ script:
       # Ensis Up: Bright purple ceiling wash (dramatic!)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+          entity_id: light.up
         data:
           brightness: 200  # 78% brightness
           rgb_color: [138, 43, 226]  # Deep purple/magenta (matches Signe)
@@ -197,7 +197,7 @@ script:
       # Ensis Down: Dimmed soft purple (less functional light needed, party mode!)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+          entity_id: light.down
         data:
           brightness: 120  # 47% brightness (dimmed for vibe)
           rgb_color: [180, 100, 230]  # Softer purple
@@ -206,7 +206,7 @@ script:
       # Beyond Up: Deep purple accent (matches energy)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP
+          entity_id: light.sengelampe_op
         data:
           brightness: 190  # 75% brightness
           rgb_color: [138, 43, 226]  # Deep purple (matches Signe)
@@ -215,7 +215,7 @@ script:
       # Beyond Down: Soft purple table lighting
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN
+          entity_id: light.sengelampe_ned
         data:
           brightness: 130  # 51% brightness
           rgb_color: [180, 100, 230]  # Softer purple
@@ -228,7 +228,7 @@ script:
       # Signe: Start dimmer with goldenrod (will ramp up during countdown)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+          entity_id: light.hue_signe
         data:
           brightness: 150  # Start dimmer, will ramp up
           rgb_color: [218, 165, 32]  # Goldenrod
@@ -237,7 +237,7 @@ script:
       # Ensis Up: Golden ceiling wash, building energy
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+          entity_id: light.up
         data:
           brightness: 150  # Start dimmer
           rgb_color: [255, 215, 0]  # Gold
@@ -246,7 +246,7 @@ script:
       # Ensis Down: Warm gold, everyone coordinated
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+          entity_id: light.down
         data:
           brightness: 140  # Slightly dimmer
           rgb_color: [255, 215, 0]  # Gold
@@ -255,7 +255,7 @@ script:
       # Beyond Up: Golden accent, building energy
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP
+          entity_id: light.sengelampe_op
         data:
           brightness: 145  # 57% brightness
           rgb_color: [218, 165, 32]  # Goldenrod (matches Signe)
@@ -264,7 +264,7 @@ script:
       # Beyond Down: Warm gold table lighting
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN
+          entity_id: light.sengelampe_ned
         data:
           brightness: 140  # 55% brightness
           rgb_color: [255, 215, 0]  # Gold
@@ -277,7 +277,7 @@ script:
       # Signe: Bright celebratory gold
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+          entity_id: light.hue_signe
         data:
           brightness: 200  # Bright and celebratory
           rgb_color: [255, 215, 0]  # Gold/champagne
@@ -286,7 +286,7 @@ script:
       # Ensis Up: Bright golden ceiling wash (celebration!)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+          entity_id: light.up
         data:
           brightness: 220  # Brighter
           rgb_color: [255, 215, 0]  # Gold/champagne (matches Signe)
@@ -295,7 +295,7 @@ script:
       # Ensis Down: Bright light yellow (everyone can see to celebrate!)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+          entity_id: light.down
         data:
           brightness: 220  # Brighter
           rgb_color: [255, 255, 224]  # Light yellow
@@ -304,7 +304,7 @@ script:
       # Beyond Up: Bright celebratory gold
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP
+          entity_id: light.sengelampe_op
         data:
           brightness: 210  # 82% brightness
           rgb_color: [255, 215, 0]  # Gold/champagne (matches Signe)
@@ -313,7 +313,7 @@ script:
       # Beyond Down: Bright light yellow table lighting
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN
+          entity_id: light.sengelampe_ned
         data:
           brightness: 210  # 82% brightness
           rgb_color: [255, 255, 224]  # Light yellow
