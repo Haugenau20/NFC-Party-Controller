@@ -2,11 +2,16 @@
 #
 # PLACEHOLDERS TO REPLACE:
 # - light.PLACEHOLDER_LIVING_ROOM_SIGNE → Your Hue Signe floor lamp entity ID
-# - light.PLACEHOLDER_LIVING_ROOM_ENSIS → Your Hue Ensis hanging lamp entity ID
+# - light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP → Your Hue Ensis "Up" light (ambient ceiling wash)
+# - light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN → Your Hue Ensis "Down" light (functional task lighting)
 # - PLACEHOLDER_TAG_EARLY_EVENING → NFC tag UID for Early Evening override
 # - PLACEHOLDER_TAG_PRIME_TIME → NFC tag UID for Prime Time override
 # - PLACEHOLDER_TAG_AFTER_PARTY → NFC tag UID for After Party override
 # - button.nfc_party_controller_1_play_success → Already exists from your setup
+#
+# DESIGN PHILOSOPHY:
+# - Ensis Down: Functional lighting so people can see (stable, neutral tones)
+# - Ensis Up: Ambient mood lighting that washes the ceiling (colorful, matches vibe)
 
 # ============================================================================
 # SCRIPTS - Define each party phase lighting configuration
@@ -17,6 +22,7 @@ script:
   living_room_early_evening:
     alias: "Living Room - Early Evening Phase"
     sequence:
+      # Signe: Colorful warm amber gradient
       - service: light.turn_on
         target:
           entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
@@ -25,18 +31,29 @@ script:
           rgb_color: [255, 147, 41]  # Warm amber/orange
           transition: 3
 
+      # Ensis Up: Ambient ceiling wash with warm amber
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+        data:
+          brightness: 170  # 67% brightness
+          rgb_color: [255, 147, 41]  # Warm amber/orange (matches Signe)
+          transition: 3
+
+      # Ensis Down: Functional warm white so people can see
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
         data:
           brightness: 180  # 70% brightness
-          rgb_color: [255, 197, 143]  # Warm white
+          rgb_color: [255, 197, 143]  # Warm white (functional)
           transition: 3
 
   # Prime Time Phase (10pm-11:30pm) - Energetic, saturated party mode
   living_room_prime_time:
     alias: "Living Room - Prime Time Phase"
     sequence:
+      # Signe: Bold purple/magenta for energy
       - service: light.turn_on
         target:
           entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
@@ -45,18 +62,29 @@ script:
           rgb_color: [138, 43, 226]  # Deep purple/magenta
           transition: 5
 
+      # Ensis Up: Bright purple ceiling wash (dramatic!)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
         data:
-          brightness: 180  # 70% brightness
-          rgb_color: [255, 255, 255]  # White accent
+          brightness: 200  # 78% brightness
+          rgb_color: [138, 43, 226]  # Deep purple/magenta (matches Signe)
+          transition: 5
+
+      # Ensis Down: Dimmed soft purple (less functional light needed, party mode!)
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+        data:
+          brightness: 120  # 47% brightness (dimmed for vibe)
+          rgb_color: [180, 100, 230]  # Softer purple
           transition: 5
 
   # Countdown Prep Phase (11:30pm-11:58pm) - Building anticipation
   living_room_countdown_prep:
     alias: "Living Room - Countdown Prep Phase"
     sequence:
+      # Signe: Start dimmer with goldenrod (will ramp up during countdown)
       - service: light.turn_on
         target:
           entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
@@ -65,11 +93,21 @@ script:
           rgb_color: [218, 165, 32]  # Goldenrod
           transition: 10
 
+      # Ensis Up: Golden ceiling wash, building energy
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
         data:
           brightness: 150  # Start dimmer
+          rgb_color: [255, 215, 0]  # Gold
+          transition: 10
+
+      # Ensis Down: Warm gold, everyone coordinated
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
+        data:
+          brightness: 140  # Slightly dimmer
           rgb_color: [255, 215, 0]  # Gold
           transition: 10
 
@@ -77,6 +115,7 @@ script:
   living_room_after_party:
     alias: "Living Room - After Party Phase"
     sequence:
+      # Signe: Bright celebratory gold
       - service: light.turn_on
         target:
           entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
@@ -85,9 +124,19 @@ script:
           rgb_color: [255, 215, 0]  # Gold/champagne
           transition: 2
 
+      # Ensis Up: Bright golden ceiling wash (celebration!)
       - service: light.turn_on
         target:
-          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP
+        data:
+          brightness: 220  # Brighter
+          rgb_color: [255, 215, 0]  # Gold/champagne (matches Signe)
+          transition: 2
+
+      # Ensis Down: Bright light yellow (everyone can see to celebrate!)
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN
         data:
           brightness: 220  # Brighter
           rgb_color: [255, 255, 224]  # Light yellow

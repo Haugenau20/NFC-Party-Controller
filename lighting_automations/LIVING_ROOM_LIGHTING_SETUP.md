@@ -11,6 +11,7 @@ The living room lighting system provides:
 - **4 distinct party phases** with carefully designed color schemes
 - **NFC override cards** for manual control when needed
 - **Special midnight countdown sequence** with dramatic lighting effects
+- **Smart Ensis Up/Down control** - Up light creates ambient ceiling wash, Down light provides functional task lighting
 
 ---
 
@@ -20,28 +21,32 @@ The living room lighting system provides:
 **Vibe:** Warm, welcoming, conversational
 
 - **Signe Floor Lamp:** Warm amber/orange gradient at 70%
-- **Ensis Hanging Lamp:** Warm white at 70%
+- **Ensis Up (Ceiling Wash):** Warm amber/orange at 67% - matches Signe for cohesive ambiance
+- **Ensis Down (Task Light):** Warm white at 70% - functional lighting so people can see
 - **Purpose:** Creates inviting atmosphere as guests arrive
 
 ### 2. Prime Time (10:00 PM - 11:30 PM)
 **Vibe:** Energetic, saturated, party mode
 
 - **Signe Floor Lamp:** Deep purple/magenta at 78%
-- **Ensis Hanging Lamp:** White accent at 70%
+- **Ensis Up (Ceiling Wash):** Deep purple/magenta at 78% - dramatic colorful ceiling
+- **Ensis Down (Task Light):** Soft purple at 47% (dimmed) - less functional light needed, party vibe!
 - **Purpose:** Peak party energy, dancing, celebration
 
 ### 3. Countdown Prep (11:30 PM - 11:59 PM)
 **Vibe:** Building anticipation for midnight
 
 - **Signe Floor Lamp:** Goldenrod starting at 60%
-- **Ensis Hanging Lamp:** Gold starting at 60%
+- **Ensis Up (Ceiling Wash):** Gold at 60% - building energy
+- **Ensis Down (Task Light):** Gold at 55% - everyone coordinated
 - **Purpose:** Transition to midnight celebration
 
 ### 4. After Party (12:01 AM onwards)
 **Vibe:** Celebratory but sustainable
 
 - **Signe Floor Lamp:** Bright gold/champagne at 78%
-- **Ensis Hanging Lamp:** Light yellow at 86%
+- **Ensis Up (Ceiling Wash):** Bright gold at 86% - celebration mode!
+- **Ensis Down (Task Light):** Light yellow at 86% - everyone can see to celebrate
 - **Purpose:** Post-midnight celebration, can stay here or revert to Prime Time
 
 ---
@@ -66,8 +71,10 @@ In Home Assistant:
 1. Go to **Settings** → **Devices & Services** → **Philips Hue**
 2. Find your living room lights:
    - Hue Signe floor lamp
-   - Hue Ensis hanging lamp
-3. Click each light and copy the **Entity ID** (e.g., `light.living_room_signe`)
+   - Hue Ensis hanging lamp - **Note:** The Ensis has TWO separate entities:
+     - One for the "Up" light (ceiling wash)
+     - One for the "Down" light (task lighting)
+3. Click each light and copy the **Entity ID** (e.g., `light.living_room_signe`, `light.living_room_ensis_up`, `light.living_room_ensis_down`)
 
 ### 2. Update Placeholders in Configuration Files
 
@@ -76,8 +83,9 @@ In Home Assistant:
 Replace these placeholders:
 ```yaml
 # Light entities
-light.PLACEHOLDER_LIVING_ROOM_SIGNE  → light.your_actual_signe_entity
-light.PLACEHOLDER_LIVING_ROOM_ENSIS  → light.your_actual_ensis_entity
+light.PLACEHOLDER_LIVING_ROOM_SIGNE       → light.your_actual_signe_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP    → light.your_actual_ensis_up_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN  → light.your_actual_ensis_down_entity
 
 # NFC tag IDs (optional - only if you want override cards)
 PLACEHOLDER_TAG_EARLY_EVENING  → your_nfc_tag_uid_1
@@ -90,8 +98,9 @@ PLACEHOLDER_TAG_AFTER_PARTY    → your_nfc_tag_uid_3
 Replace these placeholders:
 ```yaml
 # Light entities (same as above)
-light.PLACEHOLDER_LIVING_ROOM_SIGNE  → light.your_actual_signe_entity
-light.PLACEHOLDER_LIVING_ROOM_ENSIS  → light.your_actual_ensis_entity
+light.PLACEHOLDER_LIVING_ROOM_SIGNE       → light.your_actual_signe_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP    → light.your_actual_ensis_up_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN  → light.your_actual_ensis_down_entity
 
 # NFC tag ID (optional - for manual countdown trigger)
 PLACEHOLDER_TAG_MIDNIGHT_COUNTDOWN  → your_nfc_tag_uid_4
