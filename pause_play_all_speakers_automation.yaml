@@ -1,0 +1,119 @@
+automation:
+  - alias: "Admin - Pause/Play All Speakers"
+    description: "Admin-only: Pauses or plays all speakers based on their current states"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER-ADMIN-PAUSE-PLAY-ALL"  # Replace with actual admin NFC tag UID
+
+    action:
+      - choose:
+          # Case 1: If EITHER speaker is playing → Pause BOTH
+          - conditions:
+              - or:
+                  - condition: state
+                    entity_id: media_player.spotify_soren_kjaedegaard_haug
+                    state: 'playing'
+                  - condition: state
+                    entity_id: media_player.spotify_soren_nytar
+                    state: 'playing'
+            sequence:
+              - service: media_player.media_pause
+                target:
+                  entity_id:
+                    - media_player.spotify_soren_kjaedegaard_haug
+                    - media_player.spotify_soren_nytar
+
+          # Case 2: Both are paused → Play both
+          - conditions:
+              - condition: state
+                entity_id: media_player.spotify_soren_kjaedegaard_haug
+                state: 'paused'
+              - condition: state
+                entity_id: media_player.spotify_soren_nytar
+                state: 'paused'
+            sequence:
+              - service: media_player.media_play
+                target:
+                  entity_id:
+                    - media_player.spotify_soren_kjaedegaard_haug
+                    - media_player.spotify_soren_nytar
+
+          # Case 3: Both are idle → Start both with spotcast
+          - conditions:
+              - condition: template
+                value_template: "{{ not is_state('media_player.spotify_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotify_soren_kjaedegaard_haug', 'paused') }}"
+              - condition: template
+                value_template: "{{ not is_state('media_player.spotify_soren_nytar', 'playing') and not is_state('media_player.spotify_soren_nytar', 'paused') }}"
+            sequence:
+              # Start Device 1 (Living room)
+              - service: spotcast.play_media
+                data:
+                  media_player:
+                    entity_id: media_player.stue_1140714430_spotcast
+                  spotify_uri: "{{ states('input_text.base_playlist_uri') }}"
+                  account: "01KACG05YGPRDMAJDPE29KDBKV"
+
+              # Start Device 2 (Kitchen)
+              # TODO: Create helper input_text.device_2_base_playlist_uri in Home Assistant UI
+              - service: spotcast.play_media
+                data:
+                  media_player:
+                    entity_id: media_player.kokken_31fi44dypurzlvw6e6ftr6mu673y_spotcast
+                  spotify_uri: "{{ states('input_text.device_2_base_playlist_uri') }}"
+                  account: "01KCE37RQSTJ0G8RREGMB0Y2XQ"
+
+        # Default: Mixed states (one idle, one paused, or other combinations)
+        default:
+          # Handle Device 1 based on its state
+          - choose:
+              # Device 1 is idle → Start it with spotcast
+              - conditions:
+                  - condition: template
+                    value_template: "{{ not is_state('media_player.spotify_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotify_soren_kjaedegaard_haug', 'paused') }}"
+                sequence:
+                  - service: spotcast.play_media
+                    data:
+                      media_player:
+                        entity_id: media_player.stue_1140714430_spotcast
+                      spotify_uri: "{{ states('input_text.base_playlist_uri') }}"
+                      account: "01KACG05YGPRDMAJDPE29KDBKV"
+
+              # Device 1 is paused → Resume it
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.spotify_soren_kjaedegaard_haug
+                    state: 'paused'
+                sequence:
+                  - service: media_player.media_play
+                    target:
+                      entity_id: media_player.spotify_soren_kjaedegaard_haug
+
+          # Handle Device 2 based on its state
+          - choose:
+              # Device 2 is idle → Start it with spotcast
+              # TODO: Create helper input_text.device_2_base_playlist_uri in Home Assistant UI
+              - conditions:
+                  - condition: template
+                    value_template: "{{ not is_state('media_player.spotify_soren_nytar', 'playing') and not is_state('media_player.spotify_soren_nytar', 'paused') }}"
+                sequence:
+                  - service: spotcast.play_media
+                    data:
+                      media_player:
+                        entity_id: media_player.kokken_31fi44dypurzlvw6e6ftr6mu673y_spotcast
+                      spotify_uri: "{{ states('input_text.device_2_base_playlist_uri') }}"
+                      account: "01KCE37RQSTJ0G8RREGMB0Y2XQ"
+
+              # Device 2 is paused → Resume it
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.spotify_soren_nytar
+                    state: 'paused'
+                sequence:
+                  - service: media_player.media_play
+                    target:
+                      entity_id: media_player.spotify_soren_nytar
+
+    mode: single  # Prevent simultaneous executions
