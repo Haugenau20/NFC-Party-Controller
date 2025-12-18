@@ -4,13 +4,8 @@
 # - light.PLACEHOLDER_KITCHEN_AURELLE → Your Hue Aurelle 60x60cm entity ID (white ambiance only)
 # - light.PLACEHOLDER_KITCHEN_LIGHTSTRIP → Your Hue lightstrip entity ID (color capable)
 # - light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA → Your extra 2m lightstrip entity ID (OPTIONAL - see note below)
-# - TAG_FRIENDLY_NAMES → Replace placeholder friendly names with your actual tag names from Settings → Tags
+# - PLACEHOLDER_TAG_[PLAYLIST] → Replace with actual NFC tag UIDs for each playlist
 # - button.nfc_party_controller_2_play_success → Device 2 success sound (already exists)
-#
-# NOTE ON TAG FRIENDLY NAMES:
-# This automation uses Home Assistant's tag registry with friendly names instead of raw UIDs.
-# Go to Settings → Tags and ensure all your playlist tags are registered with clear friendly names.
-# Then replace the placeholder names below (e.g., 'rock_playlist') with your actual tag names.
 #
 # NOTE ON EXTRA LIGHTSTRIP:
 # The extra 2m lightstrip code is COMMENTED OUT by default (see lines marked with ##).
@@ -295,30 +290,8 @@ automation:
     description: "Changes kitchen lights based on which playlist NFC card is scanned on Device 2"
 
     trigger:
-      # Using tag registry with friendly names - much cleaner than raw UIDs!
-      # Replace these placeholder names with your actual tag friendly names from Settings → Tags
-      - platform: tag
-        tag_id:
-          # ENERGETIC CATEGORY (14 playlists)
-          - 80s_playlist
-          - 90s_playlist
-          - 00s_playlist
-          - 10s_playlist
-          - 20s_playlist
-          - disco_playlist
-          - rock_playlist
-          - house_playlist
-          - hiphop_playlist
-          - party_playlist
-          - rap_playlist
-          - singalong_playlist
-          - mgp_playlist
-          - dansk_top_playlist
-          # CHILL CATEGORY (4 playlists)
-          - chill_playlist
-          - jazz_playlist
-          - elevator_playlist
-          - lounge_playlist
+      - platform: event
+        event_type: tag_scanned
 
     condition:
       # Only trigger on Device 2 (Kitchen)
@@ -333,7 +306,7 @@ automation:
           # 80s
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == '80s_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_80S' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -345,7 +318,7 @@ automation:
           # 90s
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == '90s_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_90S' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -357,7 +330,7 @@ automation:
           # 00s (2000s)
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == '00s_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_00S' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -369,7 +342,7 @@ automation:
           # 10s (2010s)
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == '10s_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_10S' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -381,7 +354,7 @@ automation:
           # 20s (2020s)
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == '20s_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_20S' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -393,7 +366,7 @@ automation:
           # Disco
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'disco_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_DISCO' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -405,7 +378,7 @@ automation:
           # Rock
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'rock_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_ROCK' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -417,7 +390,7 @@ automation:
           # House
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'house_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_HOUSE' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -429,7 +402,7 @@ automation:
           # HipHop
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'hiphop_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_HIPHOP' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -441,7 +414,7 @@ automation:
           # Party
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'party_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_PARTY' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -453,7 +426,7 @@ automation:
           # Rap
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'rap_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_RAP' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -465,7 +438,7 @@ automation:
           # Singalong
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'singalong_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_SINGALONG' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -477,7 +450,7 @@ automation:
           # MGP (Danish children's song contest)
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'mgp_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_MGP' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -489,7 +462,7 @@ automation:
           # Dansk Top
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'dansk_top_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_DANSK_TOP' }}"
             sequence:
               - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -504,7 +477,7 @@ automation:
           # Chill
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'chill_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_CHILL' }}"
             sequence:
               - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -516,7 +489,7 @@ automation:
           # Jazz
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'jazz_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_JAZZ' }}"
             sequence:
               - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -528,7 +501,7 @@ automation:
           # Elevator
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'elevator_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_ELEVATOR' }}"
             sequence:
               - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
@@ -540,7 +513,7 @@ automation:
           # Lounge
           - conditions:
               - condition: template
-                value_template: "{{ trigger.id == 'lounge_playlist' }}"
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_LOUNGE' }}"
             sequence:
               - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
               - service: input_select.select_next
