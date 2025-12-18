@@ -7,59 +7,119 @@ Complete setup guide for the automated time-based party lighting system with NFC
 ## Overview
 
 The living room lighting system provides:
-- **Automated time-based transitions** for your New Year's party
-- **4 distinct party phases** with carefully designed color schemes
+- **Automated time-based transitions** for your New Year's party (5pm - midnight+)
+- **6 distinct party phases** with carefully designed color schemes
 - **NFC override cards** for manual control when needed
 - **Special midnight countdown sequence** with dramatic lighting effects
-- **Smart Ensis Up/Down control** - Up light creates ambient ceiling wash, Down light provides functional task lighting
+- **5 synchronized lights** - Signe, Ensis Up/Down, Beyond Up/Down
 
 ---
 
-## Party Phases
+## Party Timeline
 
-### 1. Early Evening (8:00 PM - 10:00 PM)
-**Vibe:** Warm, welcoming, conversational
+| Time | Phase | Vibe |
+|------|-------|------|
+| 5:00 PM - 6:30 PM | **Arrival** | Warm and welcoming with colorful accents |
+| 6:30 PM - 8:00 PM | **Dinner** | Cozy, warm, dinner-focused |
+| 8:00 PM - 10:00 PM | **Post-Dinner** | Energy building, transition to party mode |
+| 10:00 PM - 11:30 PM | **Prime Time** | Energetic, saturated, peak party mode |
+| 11:30 PM - 11:59 PM | **Countdown Prep** | Building anticipation for midnight |
+| 11:59 PM - 12:01 AM | **Midnight Countdown** | 60-second dramatic sequence |
+| 12:01 AM onwards | **After Party** | Celebratory but sustainable |
 
-- **Signe Floor Lamp:** Warm amber/orange gradient at 70%
-- **Ensis Up (Ceiling Wash):** Warm amber/orange at 67% - matches Signe for cohesive ambiance
-- **Ensis Down (Task Light):** Warm white at 70% - functional lighting so people can see
-- **Purpose:** Creates inviting atmosphere as guests arrive
+---
 
-### 2. Prime Time (10:00 PM - 11:30 PM)
-**Vibe:** Energetic, saturated, party mode
+## Party Phases (Detailed)
 
-- **Signe Floor Lamp:** Deep purple/magenta at 78%
+### 1. Arrival (5:00 PM - 6:30 PM)
+**Vibe:** Warm and welcoming with colorful accents (not wild)
+
+- **Signe Floor Lamp:** Light coral at 75% - welcoming accent
+- **Ensis Up (Ceiling Wash):** Warm amber at 70% - ambient ceiling glow
+- **Ensis Down (Task Light):** Soft warm white at 75% - functional light to see
+- **Beyond Up (Table Accent):** Soft peach at 67% - adds warmth and depth
+- **Beyond Down (Table Light):** Soft warm white at 70% - table illumination
+- **Purpose:** Create inviting atmosphere as guests arrive
+
+### 2. Dinner (6:30 PM - 8:00 PM)
+**Vibe:** Cozy, warm, dinner-focused
+
+- **Signe Floor Lamp:** Dimmed warm amber at 55% - cozy but not distracting
+- **Ensis Up (Ceiling Wash):** Soft warm amber at 51% - subtle ambiance
+- **Ensis Down (Task Light):** Bright warm white at 78% - need to see food!
+- **Beyond Up (Table Accent):** Very soft warm amber at 47% - very subtle
+- **Beyond Down (Table Light):** Warm white at 75% - functional table lighting
+- **Purpose:** Functional lighting for dinner without being too bright
+
+### 3. Post-Dinner (8:00 PM - 10:00 PM)
+**Vibe:** Energy building, transition to party mode
+
+- **Signe Floor Lamp:** Warm amber/orange at 70% - energy rising
+- **Ensis Up (Ceiling Wash):** Warm amber/orange at 67% - matches Signe for cohesive vibe
+- **Ensis Down (Task Light):** Warm white at 70% - functional lighting
+- **Beyond Up (Table Accent):** Warm amber at 63% - matches Signe
+- **Beyond Down (Table Light):** Warm white at 67% - table lighting
+- **Purpose:** Transition from dinner relaxation to dancing energy
+
+### 4. Prime Time (10:00 PM - 11:30 PM)
+**Vibe:** Energetic, saturated, peak party mode
+
+- **Signe Floor Lamp:** Deep purple/magenta at 78% - bold statement
 - **Ensis Up (Ceiling Wash):** Deep purple/magenta at 78% - dramatic colorful ceiling
-- **Ensis Down (Task Light):** Soft purple at 47% (dimmed) - less functional light needed, party vibe!
+- **Ensis Down (Task Light):** Soft purple at 47% (dimmed) - less functional light, more vibe!
+- **Beyond Up (Table Accent):** Deep purple at 75% - matches energy
+- **Beyond Down (Table Light):** Soft purple at 51% - table accent
 - **Purpose:** Peak party energy, dancing, celebration
 
-### 3. Countdown Prep (11:30 PM - 11:59 PM)
+### 5. Countdown Prep (11:30 PM - 11:59 PM)
 **Vibe:** Building anticipation for midnight
 
-- **Signe Floor Lamp:** Goldenrod starting at 60%
-- **Ensis Up (Ceiling Wash):** Gold at 60% - building energy
+- **Signe Floor Lamp:** Goldenrod at 59% - starting dimmer (will ramp up)
+- **Ensis Up (Ceiling Wash):** Gold at 59% - building energy
 - **Ensis Down (Task Light):** Gold at 55% - everyone coordinated
-- **Purpose:** Transition to midnight celebration
+- **Beyond Up (Table Accent):** Goldenrod at 57% - matches Signe
+- **Beyond Down (Table Light):** Gold at 55% - coordinated
+- **Purpose:** Set stage for countdown sequence
 
-### 4. After Party (12:01 AM onwards)
+### 6. After Party (12:01 AM onwards)
 **Vibe:** Celebratory but sustainable
 
-- **Signe Floor Lamp:** Bright gold/champagne at 78%
-- **Ensis Up (Ceiling Wash):** Bright gold at 86% - celebration mode!
+- **Signe Floor Lamp:** Bright gold/champagne at 78% - celebration!
+- **Ensis Up (Ceiling Wash):** Bright gold at 86% - celebration mode
 - **Ensis Down (Task Light):** Light yellow at 86% - everyone can see to celebrate
-- **Purpose:** Post-midnight celebration, can stay here or revert to Prime Time
+- **Beyond Up (Table Accent):** Bright gold at 82% - matches celebration
+- **Beyond Down (Table Light):** Light yellow at 82% - bright and cheerful
+- **Purpose:** Post-midnight celebration, sustainable for hours
+
+---
+
+## Light Design Philosophy
+
+**Functional vs. Ambient:**
+- **Ensis Down & Beyond Down:** Functional overhead/table lighting (stable, helps people see)
+- **Ensis Up & Beyond Up:** Ambient ceiling/table wash (colorful, matches vibe)
+- **Signe:** Main color statement piece (sets the overall mood)
+
+**During Different Phases:**
+- **Dinner:** Functional lights (Down) are brighter for eating
+- **Prime Time:** Functional lights (Down) are dimmed for party vibe
+- **Countdown:** All lights synchronized for dramatic effect
 
 ---
 
 ## Special Feature: Midnight Countdown
 
-At **11:59:00 PM**, an automatic 60-second countdown sequence begins:
+At **11:59:00 PM**, an automatic 60-second countdown sequence begins with all 5 lights synchronized:
 
-1. **0:00-0:40** - Gradual brightness ramp from 20% → 80%
-2. **0:40-0:58** - Faster pulsing between 80% → 90%
-3. **0:58-1:00** - Build to 100% intensity
-4. **1:00 (Midnight!)** - Pure white flash
-5. **1:00+** - Settle into After Party colors
+1. **0:00-0:10** - All lights start at 20% gold (dim)
+2. **0:10-0:20** - Gradual ramp to 40% gold
+3. **0:20-0:30** - Gradual ramp to 60% gold
+4. **0:30-0:40** - Gradual ramp to 80% gold
+5. **0:40-0:50** - Faster pulsing: 90% → 80% → 90% → 80%
+6. **0:50-0:58** - Build to 100% gold intensity
+7. **0:58-1:00** - Maximum brightness, building tension
+8. **1:00 (Midnight!)** - Pure white flash at 100% (instant)
+9. **1:00+** - Settle into After Party celebratory colors
 
 ---
 
@@ -70,11 +130,17 @@ At **11:59:00 PM**, an automatic 60-second countdown sequence begins:
 In Home Assistant:
 1. Go to **Settings** → **Devices & Services** → **Philips Hue**
 2. Find your living room lights:
-   - Hue Signe floor lamp
-   - Hue Ensis hanging lamp - **Note:** The Ensis has TWO separate entities:
+   - **Hue Signe** floor lamp
+   - **Hue Ensis** hanging lamp - has TWO separate entities:
      - One for the "Up" light (ceiling wash)
      - One for the "Down" light (task lighting)
-3. Click each light and copy the **Entity ID** (e.g., `light.living_room_signe`, `light.living_room_ensis_up`, `light.living_room_ensis_down`)
+   - **Hue Beyond** table lamp - has TWO separate entities:
+     - One for the "Up" light (ambient)
+     - One for the "Down" light (table task lighting)
+3. Click each light and copy the **Entity ID**
+   - Example: `light.living_room_signe`
+   - Example: `light.living_room_ensis_up`
+   - Example: `light.living_room_beyond_down`
 
 ### 2. Update Placeholders in Configuration Files
 
@@ -82,28 +148,34 @@ In Home Assistant:
 
 Replace these placeholders:
 ```yaml
-# Light entities
-light.PLACEHOLDER_LIVING_ROOM_SIGNE       → light.your_actual_signe_entity
-light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP    → light.your_actual_ensis_up_entity
-light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN  → light.your_actual_ensis_down_entity
+# Light entities (5 total)
+light.PLACEHOLDER_LIVING_ROOM_SIGNE        → light.your_actual_signe_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP     → light.your_actual_ensis_up_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN   → light.your_actual_ensis_down_entity
+light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP    → light.your_actual_beyond_up_entity
+light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN  → light.your_actual_beyond_down_entity
 
 # NFC tag IDs (optional - only if you want override cards)
-PLACEHOLDER_TAG_EARLY_EVENING  → your_nfc_tag_uid_1
-PLACEHOLDER_TAG_PRIME_TIME     → your_nfc_tag_uid_2
-PLACEHOLDER_TAG_AFTER_PARTY    → your_nfc_tag_uid_3
+PLACEHOLDER_TAG_ARRIVAL      → your_nfc_tag_uid_1
+PLACEHOLDER_TAG_DINNER       → your_nfc_tag_uid_2
+PLACEHOLDER_TAG_POST_DINNER  → your_nfc_tag_uid_3
+PLACEHOLDER_TAG_PRIME_TIME   → your_nfc_tag_uid_4
+PLACEHOLDER_TAG_AFTER_PARTY  → your_nfc_tag_uid_5
 ```
 
 **File: `living_room_midnight_countdown.yaml`**
 
 Replace these placeholders:
 ```yaml
-# Light entities (same as above)
-light.PLACEHOLDER_LIVING_ROOM_SIGNE       → light.your_actual_signe_entity
-light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP    → light.your_actual_ensis_up_entity
-light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN  → light.your_actual_ensis_down_entity
+# Light entities (same 5 as above)
+light.PLACEHOLDER_LIVING_ROOM_SIGNE        → light.your_actual_signe_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_UP     → light.your_actual_ensis_up_entity
+light.PLACEHOLDER_LIVING_ROOM_ENSIS_DOWN   → light.your_actual_ensis_down_entity
+light.PLACEHOLDER_LIVING_ROOM_BEYOND_UP    → light.your_actual_beyond_up_entity
+light.PLACEHOLDER_LIVING_ROOM_BEYOND_DOWN  → light.your_actual_beyond_down_entity
 
 # NFC tag ID (optional - for manual countdown trigger)
-PLACEHOLDER_TAG_MIDNIGHT_COUNTDOWN  → your_nfc_tag_uid_4
+PLACEHOLDER_TAG_MIDNIGHT_COUNTDOWN  → your_nfc_tag_uid_6
 ```
 
 ### 3. Copy Files to Home Assistant
@@ -146,7 +218,9 @@ script: !include living_room_party_lighting.yaml
 After restart:
 1. Go to **Settings** → **Automations & Scenes**
 2. Verify these automations appear:
-   - "Living Room - Auto Early Evening (8pm)"
+   - "Living Room - Auto Arrival (5pm)"
+   - "Living Room - Auto Dinner (6:30pm)"
+   - "Living Room - Auto Post-Dinner (8pm)"
    - "Living Room - Auto Prime Time (10pm)"
    - "Living Room - Auto Countdown Prep (11:30pm)"
    - "Living Room - Auto After Party (12:01am)"
@@ -161,16 +235,20 @@ After restart:
 
 1. Go to **Settings** → **Automations & Scenes** → **Scripts**
 2. Find and run these scripts manually:
-   - `living_room_early_evening`
+   - `living_room_arrival`
+   - `living_room_dinner`
+   - `living_room_post_dinner`
    - `living_room_prime_time`
    - `living_room_countdown_prep`
    - `living_room_after_party`
+3. Watch all 5 lights change together!
 
 ### Test Midnight Countdown
 
 1. **Option A:** Run the script manually
    - Go to Scripts → `living_room_midnight_countdown`
    - Click "Run Script"
+   - Watch the 60-second sequence
 
 2. **Option B:** Use NFC card (if configured)
    - Scan the midnight countdown override card
@@ -182,10 +260,10 @@ After restart:
 ### Test Time-Based Triggers
 
 Temporarily change one automation's time trigger to test:
-1. Edit "Living Room - Auto Early Evening"
-2. Change `at: "20:00:00"` to a time 1 minute from now
+1. Edit "Living Room - Auto Arrival"
+2. Change `at: "17:00:00"` to a time 1 minute from now
 3. Wait and verify it triggers
-4. Change back to `20:00:00`
+4. Change back to `17:00:00`
 
 ---
 
@@ -203,10 +281,12 @@ If you want manual control via NFC cards:
 ### Assign Card Purposes
 
 Create physical labels for your cards:
-- **Card 1:** "Early Evening" (warm arrival vibe)
-- **Card 2:** "Prime Time" (peak party mode)
-- **Card 3:** "After Party" (celebration mode)
-- **Card 4:** "Midnight Countdown" (manual trigger)
+- **Card 1:** "Arrival" (warm welcoming vibe)
+- **Card 2:** "Dinner" (functional dining light)
+- **Card 3:** "Post-Dinner" (energy building)
+- **Card 4:** "Prime Time" (peak party mode)
+- **Card 5:** "After Party" (celebration mode)
+- **Card 6:** "Midnight Countdown" (manual trigger)
 
 ### Update Configuration
 
@@ -232,13 +312,28 @@ Common party colors:
 [255, 255, 255]  # White
 ```
 
+Current phase colors:
+- Arrival: Light coral `[255, 160, 122]`, warm amber `[255, 180, 100]`
+- Dinner: Warm amber `[255, 150, 80]`, warm white `[255, 220, 180]`
+- Post-Dinner: Warm amber/orange `[255, 147, 41]`, warm white `[255, 197, 143]`
+- Prime Time: Deep purple/magenta `[138, 43, 226]`, soft purple `[180, 100, 230]`
+- Countdown Prep: Goldenrod `[218, 165, 32]`, gold `[255, 215, 0]`
+- After Party: Gold `[255, 215, 0]`, light yellow `[255, 255, 224]`
+
 ### Adjusting Brightness
 
 Brightness values: 0-255 (0 = off, 255 = 100%)
 - 51 = 20%
 - 102 = 40%
+- 120 = 47%
+- 140 = 55%
 - 153 = 60%
+- 170 = 67%
+- 180 = 70%
+- 190 = 75%
+- 200 = 78%
 - 204 = 80%
+- 220 = 86%
 - 230 = 90%
 - 255 = 100%
 
@@ -248,16 +343,22 @@ Edit the time triggers in the automation sections:
 ```yaml
 trigger:
   - platform: time
-    at: "20:00:00"  # 24-hour format: HH:MM:SS
+    at: "17:00:00"  # 24-hour format: HH:MM:SS (5:00 PM)
 ```
+
+Party timeline suggestions:
+- Start earlier: Change 17:00:00 to 16:00:00 (4 PM)
+- Dinner later: Change 18:30:00 to 19:00:00 (7 PM)
+- Prime Time longer: Keep at 22:00:00 but extend Countdown Prep to 23:45:00
 
 ### Adjusting Transitions
 
 Transition = smooth fade duration in seconds:
 ```yaml
-transition: 3  # 3-second fade
-transition: 0  # Instant change
-transition: 10 # 10-second fade
+transition: 3   # 3-second fade (standard)
+transition: 0   # Instant change
+transition: 5   # 5-second fade (smooth dinner transition)
+transition: 10  # 10-second fade (countdown prep)
 ```
 
 ---
@@ -265,35 +366,81 @@ transition: 10 # 10-second fade
 ## Troubleshooting
 
 ### Lights don't change at scheduled time
-- Verify Home Assistant time zone is correct
+- Verify Home Assistant time zone is correct (**Settings** → **System** → **General**)
 - Check automation is enabled (toggle switch on)
 - Check Home Assistant logs for errors
+- Verify light entity IDs are correct
+
+### Only some lights change
+- Check that all 5 entity IDs are correct
+- Verify lights are powered on and reachable
+- Check Hue bridge connection
+- Test each light individually in Hue app
 
 ### Midnight countdown doesn't start
 - Verify automation trigger time is `23:59:00`
 - Check that `living_room_after_party` script exists (countdown calls it at the end)
+- Test script manually first
 
 ### Colors look wrong
 - Some Hue bulbs have different color capabilities
-- Adjust RGB values to match your bulb's range
-- Use Hue app to find preferred colors, then match in HA
+- Adjust RGB values to match your bulb's color gamut
+- Use Hue app to find preferred colors, then replicate in Home Assistant
+- White ambiance bulbs (if any) can't show colors - only brightness
 
 ### NFC override doesn't work
-- Verify tag UID is correct (check logs)
+- Verify tag UID is correct (check logs: **Settings** → **System** → **Logs**)
 - Ensure button entity exists: `button.nfc_party_controller_1_play_success`
-- Test script directly to isolate issue
+- Test script directly to isolate issue (Scripts → Run Script)
+- Verify Device 1 is scanning the tag (not Device 2)
+
+### Countdown timing is off
+- The countdown sequence is exactly 60 seconds from start to midnight flash
+- If started at 11:59:00, the white flash occurs at 12:00:00
+- Test manually to verify timing before party night
+
+---
+
+## What Happens During the Party
+
+### Typical Flow:
+
+**5:00 PM** - Arrival phase begins automatically (warm, welcoming)
+
+**6:30 PM** - Dinner phase begins automatically (functional lighting for eating)
+
+**8:00 PM** - Post-Dinner phase begins (energy starts building, warmer colors)
+
+**10:00 PM** - Prime Time hits (purple/magenta, peak party energy!)
+
+**11:30 PM** - Countdown Prep begins (everything turns gold, anticipation building)
+
+**11:59:00 PM** - Midnight Countdown starts (60-second synchronized sequence)
+
+**12:00:00 AM** - PURE WHITE FLASH - Happy New Year! 🎉
+
+**12:00:01 AM** - After Party phase (bright gold celebration colors)
+
+### Manual Override Scenarios:
+
+- **Guests arrive early?** Scan "Arrival" card to start early
+- **Dinner runs late?** Scan "Dinner" card to extend dining phase
+- **Want to pump energy early?** Scan "Prime Time" card anytime
+- **Test countdown?** Scan "Midnight Countdown" card during setup
 
 ---
 
 ## Next Steps
 
 Once living room is working:
-- [ ] Test all phases before the party
-- [ ] Label your NFC override cards
-- [ ] Move on to kitchen lighting integration (playlist-based colors)
-- [ ] Consider adding the extra 2m lightstrip to kitchen
+- [ ] Test all 6 phases before the party
+- [ ] Test midnight countdown sequence
+- [ ] Label your NFC override cards (if using)
+- [ ] Verify all 5 lights respond correctly
+- [ ] Consider testing the full timeline 1 day before party
+- [ ] Kitchen lighting is separate - see `KITCHEN_LIGHTING_SETUP.md`
 
 ---
 
 **Created for New Year's Party 2025** 🎉
-Device 1 (Living Room) - Automated & Override Control
+Device 1 (Living Room) - Automated Time-Based Lighting with 5 Synchronized Lights
