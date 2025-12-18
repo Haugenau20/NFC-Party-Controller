@@ -1,0 +1,221 @@
+# Living Room Party Lighting - Automated Time-Based Scenes with NFC Overrides
+#
+# PLACEHOLDERS TO REPLACE:
+# - light.PLACEHOLDER_LIVING_ROOM_SIGNE → Your Hue Signe floor lamp entity ID
+# - light.PLACEHOLDER_LIVING_ROOM_ENSIS → Your Hue Ensis hanging lamp entity ID
+# - PLACEHOLDER_TAG_EARLY_EVENING → NFC tag UID for Early Evening override
+# - PLACEHOLDER_TAG_PRIME_TIME → NFC tag UID for Prime Time override
+# - PLACEHOLDER_TAG_AFTER_PARTY → NFC tag UID for After Party override
+# - button.nfc_party_controller_1_play_success → Already exists from your setup
+
+# ============================================================================
+# SCRIPTS - Define each party phase lighting configuration
+# ============================================================================
+
+script:
+  # Early Evening Phase (8-10pm) - Warm, welcoming atmosphere
+  living_room_early_evening:
+    alias: "Living Room - Early Evening Phase"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+        data:
+          brightness: 180  # 70% brightness
+          rgb_color: [255, 147, 41]  # Warm amber/orange
+          transition: 3
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 180  # 70% brightness
+          rgb_color: [255, 197, 143]  # Warm white
+          transition: 3
+
+  # Prime Time Phase (10pm-11:30pm) - Energetic, saturated party mode
+  living_room_prime_time:
+    alias: "Living Room - Prime Time Phase"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+        data:
+          brightness: 200  # 78% brightness
+          rgb_color: [138, 43, 226]  # Deep purple/magenta
+          transition: 5
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 180  # 70% brightness
+          rgb_color: [255, 255, 255]  # White accent
+          transition: 5
+
+  # Countdown Prep Phase (11:30pm-11:58pm) - Building anticipation
+  living_room_countdown_prep:
+    alias: "Living Room - Countdown Prep Phase"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+        data:
+          brightness: 150  # Start dimmer, will ramp up
+          rgb_color: [218, 165, 32]  # Goldenrod
+          transition: 10
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 150  # Start dimmer
+          rgb_color: [255, 215, 0]  # Gold
+          transition: 10
+
+  # After Party Phase (12:01am+) - Celebratory but sustainable
+  living_room_after_party:
+    alias: "Living Room - After Party Phase"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_SIGNE
+        data:
+          brightness: 200  # Bright and celebratory
+          rgb_color: [255, 215, 0]  # Gold/champagne
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 220  # Brighter
+          rgb_color: [255, 255, 224]  # Light yellow
+          transition: 2
+
+# ============================================================================
+# TIME-BASED AUTOMATIONS - Automatic scene transitions
+# ============================================================================
+
+automation:
+  # Automatic transition to Early Evening at 8:00 PM
+  - alias: "Living Room - Auto Early Evening (8pm)"
+    description: "Automatically sets living room to Early Evening phase at 8:00 PM"
+
+    trigger:
+      - platform: time
+        at: "20:00:00"
+
+    action:
+      - service: script.living_room_early_evening
+
+    mode: single
+
+  # Automatic transition to Prime Time at 10:00 PM
+  - alias: "Living Room - Auto Prime Time (10pm)"
+    description: "Automatically sets living room to Prime Time phase at 10:00 PM"
+
+    trigger:
+      - platform: time
+        at: "22:00:00"
+
+    action:
+      - service: script.living_room_prime_time
+
+    mode: single
+
+  # Automatic transition to Countdown Prep at 11:30 PM
+  - alias: "Living Room - Auto Countdown Prep (11:30pm)"
+    description: "Automatically sets living room to Countdown Prep phase at 11:30 PM"
+
+    trigger:
+      - platform: time
+        at: "23:30:00"
+
+    action:
+      - service: script.living_room_countdown_prep
+
+    mode: single
+
+  # Automatic transition to After Party at 12:01 AM
+  - alias: "Living Room - Auto After Party (12:01am)"
+    description: "Automatically sets living room to After Party phase at 12:01 AM"
+
+    trigger:
+      - platform: time
+        at: "00:01:00"
+
+    action:
+      - service: script.living_room_after_party
+
+    mode: single
+
+# ============================================================================
+# NFC OVERRIDE CARDS - Manual scene control
+# ============================================================================
+
+  # NFC Override: Early Evening
+  - alias: "Living Room - NFC Override: Early Evening"
+    description: "Scan NFC card to manually trigger Early Evening phase"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER_TAG_EARLY_EVENING"
+
+    action:
+      - service: script.living_room_early_evening
+
+      # Optional: Play success sound
+      - delay:
+          milliseconds: 300
+      - service: button.press
+        target:
+          entity_id: button.nfc_party_controller_1_play_success
+
+    mode: restart
+
+  # NFC Override: Prime Time
+  - alias: "Living Room - NFC Override: Prime Time"
+    description: "Scan NFC card to manually trigger Prime Time phase"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER_TAG_PRIME_TIME"
+
+    action:
+      - service: script.living_room_prime_time
+
+      # Optional: Play success sound
+      - delay:
+          milliseconds: 300
+      - service: button.press
+        target:
+          entity_id: button.nfc_party_controller_1_play_success
+
+    mode: restart
+
+  # NFC Override: After Party
+  - alias: "Living Room - NFC Override: After Party"
+    description: "Scan NFC card to manually trigger After Party phase"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER_TAG_AFTER_PARTY"
+
+    action:
+      - service: script.living_room_after_party
+
+      # Optional: Play success sound
+      - delay:
+          milliseconds: 300
+      - service: button.press
+        target:
+          entity_id: button.nfc_party_controller_1_play_success
+
+    mode: restart

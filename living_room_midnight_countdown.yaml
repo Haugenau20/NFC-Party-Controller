@@ -1,0 +1,178 @@
+# Living Room - New Year's Midnight Countdown Sequence
+#
+# PLACEHOLDERS TO REPLACE:
+# - light.PLACEHOLDER_LIVING_ROOM_SIGNE → Your Hue Signe floor lamp entity ID
+# - light.PLACEHOLDER_LIVING_ROOM_ENSIS → Your Hue Ensis hanging lamp entity ID
+# - PLACEHOLDER_TAG_MIDNIGHT_COUNTDOWN → NFC tag UID to manually trigger countdown
+
+# ============================================================================
+# MIDNIGHT COUNTDOWN SCRIPT
+# ============================================================================
+
+script:
+  living_room_midnight_countdown:
+    alias: "Living Room - Midnight Countdown Sequence"
+    description: "60-second countdown sequence building to midnight celebration"
+    sequence:
+      # PHASE 1: Initial dim (11:59:00)
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 51  # 20% - Start dim
+          rgb_color: [255, 215, 0]  # Gold
+          transition: 2
+
+      # PHASE 2: Gradual brightness ramp (11:59:00-11:59:50)
+      - delay:
+          seconds: 10
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 102  # 40%
+          transition: 10
+
+      - delay:
+          seconds: 10
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 153  # 60%
+          transition: 10
+
+      - delay:
+          seconds: 10
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 204  # 80%
+          transition: 10
+
+      - delay:
+          seconds: 10
+
+      # PHASE 3: Final 10 seconds - faster pulsing (11:59:50-12:00:00)
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 230  # 90%
+          transition: 2
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 204  # 80%
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 230  # 90%
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 204  # 80%
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 255  # 100% - building to climax
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      # PHASE 4: MIDNIGHT! Celebration flash (exactly at 12:00:00)
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.PLACEHOLDER_LIVING_ROOM_SIGNE
+            - light.PLACEHOLDER_LIVING_ROOM_ENSIS
+        data:
+          brightness: 255  # 100% full brightness
+          rgb_color: [255, 255, 255]  # Pure white flash
+          transition: 0  # Instant
+
+      # Brief flash duration
+      - delay:
+          milliseconds: 500
+
+      # PHASE 5: Settle into celebration colors
+      - service: script.living_room_after_party
+
+# ============================================================================
+# AUTOMATIC MIDNIGHT COUNTDOWN TRIGGER
+# ============================================================================
+
+automation:
+  # Automatically trigger countdown at 11:59:00 PM
+  - alias: "Living Room - Auto Midnight Countdown (11:59pm)"
+    description: "Automatically triggers the 60-second countdown sequence at 11:59 PM"
+
+    trigger:
+      - platform: time
+        at: "23:59:00"
+
+    action:
+      - service: script.living_room_midnight_countdown
+
+    mode: single
+
+  # Optional: NFC card to manually trigger countdown (for testing or if you miss the time)
+  - alias: "Living Room - NFC Override: Midnight Countdown"
+    description: "Scan NFC card to manually trigger the countdown sequence"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER_TAG_MIDNIGHT_COUNTDOWN"
+
+    action:
+      - service: script.living_room_midnight_countdown
+
+    mode: restart
