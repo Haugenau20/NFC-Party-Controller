@@ -1,0 +1,525 @@
+# Kitchen Playlist-Based Lighting - Category Color System
+#
+# PLACEHOLDERS TO REPLACE:
+# - light.PLACEHOLDER_KITCHEN_AURELLE → Your Hue Aurelle 60x60cm entity ID (white ambiance only)
+# - light.PLACEHOLDER_KITCHEN_LIGHTSTRIP → Your Hue lightstrip entity ID (color capable)
+# - light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA → Your extra 2m lightstrip entity ID (OPTIONAL - see note below)
+# - PLACEHOLDER_TAG_[PLAYLIST] → Replace with actual NFC tag UIDs for each playlist
+# - button.nfc_party_controller_2_play_success → Device 2 success sound (already exists)
+#
+# NOTE ON EXTRA LIGHTSTRIP:
+# The extra 2m lightstrip code is COMMENTED OUT by default (see lines marked with ##).
+# Once you install it and know the entity ID:
+# 1. Replace light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA with actual entity ID
+# 2. Uncomment all lines that start with ##
+# 3. Restart Home Assistant
+#
+# DESIGN PHILOSOPHY:
+# - Aurelle (ceiling panel): White ambiance only - brightness/temperature varies by category
+# - Lightstrip: Full RGB colors - rotates through category-specific palettes
+# - Categories: Energetic (bright/saturated) vs Chill (calm/cool)
+
+# ============================================================================
+# SCRIPTS - Color Palettes for Each Category
+# ============================================================================
+
+script:
+  # Energetic Category - Electric Blue
+  kitchen_energetic_electric_blue:
+    alias: "Kitchen Energetic - Electric Blue"
+    sequence:
+      # Aurelle: Cool white, high brightness (no color capability)
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 220  # 86% brightness
+          color_temp: 250  # Cool white
+          transition: 2
+
+      # Main Lightstrip: Electric Blue
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 200  # 78% brightness
+          rgb_color: [0, 191, 255]  # Electric Blue
+          transition: 2
+
+      # Extra 2m Lightstrip: Electric Blue (COMMENTED OUT - uncomment when installed)
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 200
+      ##     rgb_color: [0, 191, 255]
+      ##     transition: 2
+
+  # Energetic Category - Hot Magenta
+  kitchen_energetic_hot_magenta:
+    alias: "Kitchen Energetic - Hot Magenta"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 200
+          rgb_color: [255, 0, 144]  # Hot Magenta
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 200
+      ##     rgb_color: [255, 0, 144]
+      ##     transition: 2
+
+  # Energetic Category - Vibrant Orange
+  kitchen_energetic_vibrant_orange:
+    alias: "Kitchen Energetic - Vibrant Orange"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 200
+          rgb_color: [255, 140, 0]  # Vibrant Orange
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 200
+      ##     rgb_color: [255, 140, 0]
+      ##     transition: 2
+
+  # Energetic Category - Lime Green
+  kitchen_energetic_lime_green:
+    alias: "Kitchen Energetic - Lime Green"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 200
+          rgb_color: [50, 205, 50]  # Lime Green
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 200
+      ##     rgb_color: [50, 205, 50]
+      ##     transition: 2
+
+  # Energetic Category - Purple
+  kitchen_energetic_purple:
+    alias: "Kitchen Energetic - Purple"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 200
+          rgb_color: [138, 43, 226]  # Purple
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 200
+      ##     rgb_color: [138, 43, 226]
+      ##     transition: 2
+
+  # Chill Category - Cool Teal
+  kitchen_chill_cool_teal:
+    alias: "Kitchen Chill - Cool Teal"
+    sequence:
+      # Aurelle: Warm white, medium brightness
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 150  # 59% brightness
+          color_temp: 400  # Warm white
+          transition: 2
+
+      # Main Lightstrip: Cool Teal
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 160  # 63% brightness
+          rgb_color: [0, 150, 150]  # Cool Teal
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 160
+      ##     rgb_color: [0, 150, 150]
+      ##     transition: 2
+
+  # Chill Category - Soft Purple
+  kitchen_chill_soft_purple:
+    alias: "Kitchen Chill - Soft Purple"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 150
+          color_temp: 400
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 160
+          rgb_color: [147, 112, 219]  # Soft Purple
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 160
+      ##     rgb_color: [147, 112, 219]
+      ##     transition: 2
+
+  # Chill Category - Warm White
+  kitchen_chill_warm_white:
+    alias: "Kitchen Chill - Warm White"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 150
+          color_temp: 400
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 160
+          rgb_color: [255, 228, 181]  # Warm White
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 160
+      ##     rgb_color: [255, 228, 181]
+      ##     transition: 2
+
+  # Chill Category - Deep Blue
+  kitchen_chill_deep_blue:
+    alias: "Kitchen Chill - Deep Blue"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_AURELLE
+        data:
+          brightness: 150
+          color_temp: 400
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP
+        data:
+          brightness: 160
+          rgb_color: [25, 25, 112]  # Deep Blue
+          transition: 2
+
+      ## - service: light.turn_on
+      ##   target:
+      ##     entity_id: light.PLACEHOLDER_KITCHEN_LIGHTSTRIP_EXTRA
+      ##   data:
+      ##     brightness: 160
+      ##     rgb_color: [25, 25, 112]
+      ##     transition: 2
+
+# ============================================================================
+# AUTOMATION - Playlist NFC Scans Control Kitchen Lights
+# ============================================================================
+
+automation:
+  - alias: "Kitchen - Playlist-Based Lighting Control"
+    description: "Changes kitchen lights based on which playlist NFC card is scanned on Device 2"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+
+    condition:
+      # Only trigger on Device 2 (Kitchen)
+      - condition: template
+        value_template: "{{ trigger.event.data.device_id == 'c2c429cbccd32c459c05662a24505349' }}"
+
+    action:
+      - choose:
+          # ==================== ENERGETIC CATEGORY ====================
+          # Color rotates: Electric Blue → Hot Magenta → Vibrant Orange → Lime Green → Purple
+
+          # 80s
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_80S' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # 90s
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_90S' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # 00s (2000s)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_00S' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # 10s (2010s)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_10S' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # 20s (2020s)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_20S' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # Disco
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_DISCO' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # Rock
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_ROCK' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # House
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_HOUSE' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # HipHop
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_HIPHOP' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # Party
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_PARTY' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # Rap
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_RAP' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # Singalong
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_SINGALONG' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # MGP (Danish children's song contest)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_MGP' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # Dansk Top
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_DANSK_TOP' }}"
+            sequence:
+              - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_energetic_color_rotation
+                data:
+                  cycle: true
+
+          # ==================== CHILL CATEGORY ====================
+          # Color rotates: Cool Teal → Soft Purple → Warm White → Deep Blue
+
+          # Chill
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_CHILL' }}"
+            sequence:
+              - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_chill_color_rotation
+                data:
+                  cycle: true
+
+          # Jazz
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_JAZZ' }}"
+            sequence:
+              - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_chill_color_rotation
+                data:
+                  cycle: true
+
+          # Elevator
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_ELEVATOR' }}"
+            sequence:
+              - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_chill_color_rotation
+                data:
+                  cycle: true
+
+          # Lounge
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == 'PLACEHOLDER_TAG_LOUNGE' }}"
+            sequence:
+              - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+              - service: input_select.select_next
+                target:
+                  entity_id: input_select.kitchen_chill_color_rotation
+                data:
+                  cycle: true
+
+    mode: restart
