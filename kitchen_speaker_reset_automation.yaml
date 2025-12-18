@@ -1,6 +1,6 @@
 automation:
-  - alias: "Kitchen Speaker - Hard Reset via NFC"
-    description: "Resets kitchen speaker by power cycling the Hue smart plug when NFC tag is scanned"
+  - alias: "Kitchen Speaker - Hard Reset via Admin NFC Card"
+    description: "Admin-only: Resets kitchen speaker by power cycling the Hue smart plug when admin NFC card is scanned"
 
     trigger:
       - platform: event
@@ -23,14 +23,10 @@ automation:
         target:
           entity_id: switch.PLACEHOLDER_HUE_PLUG_KITCHEN_SPEAKER  # Replace with actual Hue plug entity ID
 
-      # Wait for speaker to fully boot and connect to WiFi + Spotify Connect (2 minutes)
-      - delay:
-          seconds: 120
-
-      # Log completion for debugging
+      # Log reset initiated (speaker will boot on its own, ~2min to full operation)
       - service: system_log.write
         data:
-          message: "Kitchen speaker reset complete - speaker should be operational"
+          message: "Kitchen speaker reset initiated - power cycled successfully"
           level: info
 
     mode: single  # Prevent multiple simultaneous resets
