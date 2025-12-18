@@ -138,6 +138,13 @@ action:
                 shuffle: "{{ shuffle }}"
                 repeat: "{{ repeat }}"
 
+          # Update Device 2 base playlist helper (so it remembers this for resume)
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.device_2_base_playlist_uri
+            data:
+              value: "{{ current_playlist }}"
+
           # Rotate to next playlist
           - service: input_select.select_next
             target:
