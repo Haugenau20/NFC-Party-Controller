@@ -6,7 +6,7 @@ automation:
       - platform: event
         event_type: tag_scanned
         event_data:
-          tag_id: "PLACEHOLDER-ADMIN-RESTART-HA"  # Replace with actual admin NFC tag UID
+          tag_id: "04-1E-EE-AE-7A-26-81"  # Replace with actual admin NFC tag UID
 
     action:
       # Restart Home Assistant
