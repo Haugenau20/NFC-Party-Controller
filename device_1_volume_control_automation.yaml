@@ -1,0 +1,22 @@
+automation:
+  - alias: "Device 1 - Volume Control via Potentiometer"
+    description: "Adjusts Device 1 speaker volume based on potentiometer position"
+
+    trigger:
+      - platform: state
+        entity_id: sensor.nfc_party_controller_volume_pot
+
+    condition:
+      # Only adjust volume if the sensor value is valid
+      - condition: template
+        value_template: "{{ trigger.to_state.state not in ['unknown', 'unavailable'] }}"
+
+    action:
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.stue_1140714430_spotcast
+        data:
+          # Convert 0-100% sensor value to 0.0-1.0 volume level
+          volume_level: "{{ (trigger.to_state.state | float) / 100 }}"
+
+    mode: restart

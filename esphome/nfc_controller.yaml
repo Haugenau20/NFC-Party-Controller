@@ -78,34 +78,34 @@ output:
 
 # Analog input for volume potentiometer
 # Using specific parameters for responsive control:
-# - 11db attenuation for full range
+# - 12db attenuation for full range
 # - Sliding window average for smoothing
 # - Delta filter to reduce noise
 sensor:
   # Volume potentiometer
-  # - platform: adc
-  #   pin: GPIO34
-  #   name: "${friendly_name} Volume Pot"
-  #   id: volume_pot
-  #   attenuation: 11db
-  #   update_interval: 100ms
-  #   filters:
-  #     # Sliding window average for smoothing
-  #     - sliding_window_moving_average:
-  #         window_size: 5
-  #         send_every: 5
-  #     # Delta filter - only send updates when change > 2%
-  #     - delta: 2.0
-  #     # Convert to percentage (0-100)
-  #     - calibrate_linear:
-  #         - 0.0 -> 0.0
-  #         - 3.3 -> 100.0
-  #     - clamp:
-  #         min_value: 0
-  #         max_value: 100
-  #         ignore_out_of_range: true
-  #   unit_of_measurement: "%"
-  #   accuracy_decimals: 0
+  - platform: adc
+    pin: GPIO34
+    name: "${friendly_name} Volume Pot"
+    id: volume_pot
+    attenuation: 12db
+    update_interval: 100ms
+    filters:
+      # Sliding window average for smoothing (larger window to reduce noise)
+      - sliding_window_moving_average:
+          window_size: 10
+          send_every: 2
+      # Convert to percentage using actual measured voltage range
+      - calibrate_linear:
+          - 0.142 -> 0.0
+          - 3.118 -> 100.0
+      - clamp:
+          min_value: 0
+          max_value: 100
+          ignore_out_of_range: true
+      # Only send updates when change > 2% (increased to ignore noise)
+      - delta: 2.0
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
 
   # WiFi signal strength
   - platform: wifi_signal
