@@ -1,323 +1,50 @@
-# Living Room Party Lighting - Automated Time-Based Scenes with NFC Overrides
+# Living Room Party Lighting - Automated Time-Based Hue Scenes
 #
-# PLACEHOLDERS TO REPLACE:
-# - light.hue_signe → Your Hue Signe floor lamp entity ID
-# - light.up → Your Hue Ensis "Up" light (ambient ceiling wash)
-# - light.down → Your Hue Ensis "Down" light (functional task lighting)
-# - light.sengelampe_op → Your Hue Beyond "Up" light (ambient table lamp)
-# - light.sengelampe_ned → Your Hue Beyond "Down" light (table task lighting)
-# - PLACEHOLDER_TAG_ARRIVAL → NFC tag UID for Arrival override
-# - PLACEHOLDER_TAG_DINNER → NFC tag UID for Dinner override
-# - PLACEHOLDER_TAG_POST_DINNER → NFC tag UID for Post-Dinner override
-# - PLACEHOLDER_TAG_PRIME_TIME → NFC tag UID for Prime Time override
-# - PLACEHOLDER_TAG_AFTER_PARTY → NFC tag UID for After Party override
-# - button.nfc_party_controller_1_play_success → Already exists from your setup
+# REQUIRED HUE SCENES - Create these in Philips Hue app (Living Room):
+#
+# 1. scene.living_room_arrival
+#    Phase: 5:00 PM - 6:30 PM
+#    Vibe: Warm and welcoming with colorful accents (not wild)
+#    Colors: Light coral, warm amber, soft peach, warm white
+#
+# 2. scene.living_room_dinner
+#    Phase: 6:30 PM - 8:00 PM
+#    Vibe: Cozy, warm, dinner-focused
+#    Colors: Dimmed warm amber, functional bright white for eating
+#
+# 3. scene.living_room_post_dinner
+#    Phase: 8:00 PM - 10:00 PM
+#    Vibe: Energy building, transition to party mode
+#    Colors: Warm amber/orange gradient
+#
+# 4. scene.living_room_prime_time
+#    Phase: 10:00 PM - 11:30 PM
+#    Vibe: Energetic, saturated, peak party mode
+#    Colors: Deep purple/magenta, bold and dramatic
+#
+# 5. scene.living_room_countdown_prep
+#    Phase: 11:30 PM - 11:59 PM
+#    Vibe: Building anticipation for midnight
+#    Colors: Goldenrod, gold (will transition to countdown)
+#
+# 6. scene.living_room_after_party
+#    Phase: 12:01 AM onwards
+#    Vibe: Celebratory but sustainable
+#    Colors: Bright gold/champagne, light yellow
+#
+# LIVING ROOM LIGHTS:
+# - light.hue_signe → Signe floor lamp (color capable)
+# - light.up → Ensis Up light (ambient ceiling wash)
+# - light.down → Ensis Down light (functional task lighting)
+# - light.sengelampe_op → Beyond Up light (ambient table lamp)
+# - light.sengelampe_ned → Beyond Down light (table task lighting)
 #
 # DESIGN PHILOSOPHY:
-# - Ensis Down: Functional overhead lighting (stable, helps people see)
-# - Ensis Up: Ambient ceiling wash (colorful, matches vibe)
-# - Beyond Up: Accent ambient lighting (adds depth and color variation)
-# - Beyond Down: Table task lighting (functional for table activities)
-# - Signe: Main color statement piece (sets the overall mood)
-
-# ============================================================================
-# SCRIPTS - Define each party phase lighting configuration
-# ============================================================================
-
-script:
-  # Arrival Phase (5pm-6:30pm) - Warm and welcoming with colorful accents
-  living_room_arrival:
-    alias: "Living Room - Arrival Phase"
-    sequence:
-      # Signe: Warm coral/peach accent (welcoming, not wild)
-      - service: light.turn_on
-        target:
-          entity_id: light.hue_signe
-        data:
-          brightness: 190  # 75% brightness
-          rgb_color: [255, 160, 122]  # Light coral
-          transition: 3
-
-      # Ensis Up: Warm amber ceiling wash
-      - service: light.turn_on
-        target:
-          entity_id: light.up
-        data:
-          brightness: 180  # 70% brightness
-          rgb_color: [255, 180, 100]  # Warm amber
-          transition: 3
-
-      # Ensis Down: Warm white functional lighting
-      - service: light.turn_on
-        target:
-          entity_id: light.down
-        data:
-          brightness: 190  # 75% brightness
-          rgb_color: [255, 220, 180]  # Soft warm white
-          transition: 3
-
-      # Beyond Up: Soft peachy accent (adds warmth)
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_op
-        data:
-          brightness: 170  # 67% brightness
-          rgb_color: [255, 180, 140]  # Soft peach
-          transition: 3
-
-      # Beyond Down: Warm white table lighting
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_ned
-        data:
-          brightness: 180  # 70% brightness
-          rgb_color: [255, 220, 180]  # Soft warm white
-          transition: 3
-
-  # Dinner Phase (6:30pm-8pm) - Cozy, warm, dinner-focused
-  living_room_dinner:
-    alias: "Living Room - Dinner Phase"
-    sequence:
-      # Signe: Dimmed warm amber (cozy but not distracting)
-      - service: light.turn_on
-        target:
-          entity_id: light.hue_signe
-        data:
-          brightness: 140  # 55% brightness (dimmed from arrival)
-          rgb_color: [255, 150, 80]  # Warm amber
-          transition: 5
-
-      # Ensis Up: Soft warm amber ceiling wash
-      - service: light.turn_on
-        target:
-          entity_id: light.up
-        data:
-          brightness: 130  # 51% brightness
-          rgb_color: [255, 180, 100]  # Warm amber
-          transition: 5
-
-      # Ensis Down: Brighter warm white (functional for eating)
-      - service: light.turn_on
-        target:
-          entity_id: light.down
-        data:
-          brightness: 200  # 78% brightness (need to see food!)
-          rgb_color: [255, 220, 180]  # Warm white
-          transition: 5
-
-      # Beyond Up: Very soft warm amber accent
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_op
-        data:
-          brightness: 120  # 47% brightness (very subtle)
-          rgb_color: [255, 170, 110]  # Warm amber
-          transition: 5
-
-      # Beyond Down: Warm white table lighting (functional)
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_ned
-        data:
-          brightness: 190  # 75% brightness (table needs light)
-          rgb_color: [255, 220, 180]  # Warm white
-          transition: 5
-
-  # Post-Dinner Phase (8pm-10pm) - Energy building, transition to party mode
-  living_room_post_dinner:
-    alias: "Living Room - Post-Dinner Phase"
-    sequence:
-      # Signe: Colorful warm amber gradient
-      - service: light.turn_on
-        target:
-          entity_id: light.hue_signe
-        data:
-          brightness: 180  # 70% brightness
-          rgb_color: [255, 147, 41]  # Warm amber/orange
-          transition: 3
-
-      # Ensis Up: Ambient ceiling wash with warm amber
-      - service: light.turn_on
-        target:
-          entity_id: light.up
-        data:
-          brightness: 170  # 67% brightness
-          rgb_color: [255, 147, 41]  # Warm amber/orange (matches Signe)
-          transition: 3
-
-      # Ensis Down: Functional warm white so people can see
-      - service: light.turn_on
-        target:
-          entity_id: light.down
-        data:
-          brightness: 180  # 70% brightness
-          rgb_color: [255, 197, 143]  # Warm white (functional)
-          transition: 3
-
-      # Beyond Up: Warm amber accent
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_op
-        data:
-          brightness: 160  # 63% brightness
-          rgb_color: [255, 147, 41]  # Warm amber (matches Signe)
-          transition: 3
-
-      # Beyond Down: Warm white table lighting
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_ned
-        data:
-          brightness: 170  # 67% brightness
-          rgb_color: [255, 197, 143]  # Warm white
-          transition: 3
-
-  # Prime Time Phase (10pm-11:30pm) - Energetic, saturated party mode
-  living_room_prime_time:
-    alias: "Living Room - Prime Time Phase"
-    sequence:
-      # Signe: Bold purple/magenta for energy
-      - service: light.turn_on
-        target:
-          entity_id: light.hue_signe
-        data:
-          brightness: 200  # 78% brightness
-          rgb_color: [138, 43, 226]  # Deep purple/magenta
-          transition: 5
-
-      # Ensis Up: Bright purple ceiling wash (dramatic!)
-      - service: light.turn_on
-        target:
-          entity_id: light.up
-        data:
-          brightness: 200  # 78% brightness
-          rgb_color: [138, 43, 226]  # Deep purple/magenta (matches Signe)
-          transition: 5
-
-      # Ensis Down: Dimmed soft purple (less functional light needed, party mode!)
-      - service: light.turn_on
-        target:
-          entity_id: light.down
-        data:
-          brightness: 120  # 47% brightness (dimmed for vibe)
-          rgb_color: [180, 100, 230]  # Softer purple
-          transition: 5
-
-      # Beyond Up: Deep purple accent (matches energy)
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_op
-        data:
-          brightness: 190  # 75% brightness
-          rgb_color: [138, 43, 226]  # Deep purple (matches Signe)
-          transition: 5
-
-      # Beyond Down: Soft purple table lighting
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_ned
-        data:
-          brightness: 130  # 51% brightness
-          rgb_color: [180, 100, 230]  # Softer purple
-          transition: 5
-
-  # Countdown Prep Phase (11:30pm-11:58pm) - Building anticipation
-  living_room_countdown_prep:
-    alias: "Living Room - Countdown Prep Phase"
-    sequence:
-      # Signe: Start dimmer with goldenrod (will ramp up during countdown)
-      - service: light.turn_on
-        target:
-          entity_id: light.hue_signe
-        data:
-          brightness: 150  # Start dimmer, will ramp up
-          rgb_color: [218, 165, 32]  # Goldenrod
-          transition: 10
-
-      # Ensis Up: Golden ceiling wash, building energy
-      - service: light.turn_on
-        target:
-          entity_id: light.up
-        data:
-          brightness: 150  # Start dimmer
-          rgb_color: [255, 215, 0]  # Gold
-          transition: 10
-
-      # Ensis Down: Warm gold, everyone coordinated
-      - service: light.turn_on
-        target:
-          entity_id: light.down
-        data:
-          brightness: 140  # Slightly dimmer
-          rgb_color: [255, 215, 0]  # Gold
-          transition: 10
-
-      # Beyond Up: Golden accent, building energy
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_op
-        data:
-          brightness: 145  # 57% brightness
-          rgb_color: [218, 165, 32]  # Goldenrod (matches Signe)
-          transition: 10
-
-      # Beyond Down: Warm gold table lighting
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_ned
-        data:
-          brightness: 140  # 55% brightness
-          rgb_color: [255, 215, 0]  # Gold
-          transition: 10
-
-  # After Party Phase (12:01am+) - Celebratory but sustainable
-  living_room_after_party:
-    alias: "Living Room - After Party Phase"
-    sequence:
-      # Signe: Bright celebratory gold
-      - service: light.turn_on
-        target:
-          entity_id: light.hue_signe
-        data:
-          brightness: 200  # Bright and celebratory
-          rgb_color: [255, 215, 0]  # Gold/champagne
-          transition: 2
-
-      # Ensis Up: Bright golden ceiling wash (celebration!)
-      - service: light.turn_on
-        target:
-          entity_id: light.up
-        data:
-          brightness: 220  # Brighter
-          rgb_color: [255, 215, 0]  # Gold/champagne (matches Signe)
-          transition: 2
-
-      # Ensis Down: Bright light yellow (everyone can see to celebrate!)
-      - service: light.turn_on
-        target:
-          entity_id: light.down
-        data:
-          brightness: 220  # Brighter
-          rgb_color: [255, 255, 224]  # Light yellow
-          transition: 2
-
-      # Beyond Up: Bright celebratory gold
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_op
-        data:
-          brightness: 210  # 82% brightness
-          rgb_color: [255, 215, 0]  # Gold/champagne (matches Signe)
-          transition: 2
-
-      # Beyond Down: Bright light yellow table lighting
-      - service: light.turn_on
-        target:
-          entity_id: light.sengelampe_ned
-        data:
-          brightness: 210  # 82% brightness
-          rgb_color: [255, 255, 224]  # Light yellow
-          transition: 2
+# - Time-based automation only (no manual overrides)
+# - Scenes created in Hue app for fast iteration
+# - Slower color transitions than kitchen (background vs feature)
+# - Down lights can be manually adjusted via Hue remote without affecting scene colors
+# - Midnight countdown is hardcoded sequence (not a scene) for precise timing
 
 # ============================================================================
 # TIME-BASED AUTOMATIONS - Automatic scene transitions
@@ -326,192 +53,103 @@ script:
 automation:
   # Automatic transition to Arrival at 5:00 PM
   - alias: "Living Room - Auto Arrival (5pm)"
-    description: "Automatically sets living room to Arrival phase at 5:00 PM"
+    description: "Automatically sets living room to Arrival scene at 5:00 PM"
 
     trigger:
       - platform: time
         at: "17:00:00"
 
     action:
-      - service: script.living_room_arrival
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_arrival
 
     mode: single
 
   # Automatic transition to Dinner at 6:30 PM
   - alias: "Living Room - Auto Dinner (6:30pm)"
-    description: "Automatically sets living room to Dinner phase at 6:30 PM"
+    description: "Automatically sets living room to Dinner scene at 6:30 PM"
 
     trigger:
       - platform: time
         at: "18:30:00"
 
     action:
-      - service: script.living_room_dinner
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_dinner
 
     mode: single
 
   # Automatic transition to Post-Dinner at 8:00 PM
   - alias: "Living Room - Auto Post-Dinner (8pm)"
-    description: "Automatically sets living room to Post-Dinner phase at 8:00 PM"
+    description: "Automatically sets living room to Post-Dinner scene at 8:00 PM"
 
     trigger:
       - platform: time
         at: "20:00:00"
 
     action:
-      - service: script.living_room_post_dinner
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_post_dinner
 
     mode: single
 
   # Automatic transition to Prime Time at 10:00 PM
   - alias: "Living Room - Auto Prime Time (10pm)"
-    description: "Automatically sets living room to Prime Time phase at 10:00 PM"
+    description: "Automatically sets living room to Prime Time scene at 10:00 PM"
 
     trigger:
       - platform: time
         at: "22:00:00"
 
     action:
-      - service: script.living_room_prime_time
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_prime_time
 
     mode: single
 
   # Automatic transition to Countdown Prep at 11:30 PM
   - alias: "Living Room - Auto Countdown Prep (11:30pm)"
-    description: "Automatically sets living room to Countdown Prep phase at 11:30 PM"
+    description: "Automatically sets living room to Countdown Prep scene at 11:30 PM"
 
     trigger:
       - platform: time
         at: "23:30:00"
 
     action:
-      - service: script.living_room_countdown_prep
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_countdown_prep
+
+    mode: single
+
+  # Automatic midnight countdown sequence at 11:59 PM
+  - alias: "Living Room - Auto Midnight Countdown (11:59pm)"
+    description: "Automatically triggers the 60-second countdown sequence at 11:59 PM"
+
+    trigger:
+      - platform: time
+        at: "23:59:00"
+
+    action:
+      - service: script.living_room_midnight_countdown
 
     mode: single
 
   # Automatic transition to After Party at 12:01 AM
   - alias: "Living Room - Auto After Party (12:01am)"
-    description: "Automatically sets living room to After Party phase at 12:01 AM"
+    description: "Automatically sets living room to After Party scene at 12:01 AM"
 
     trigger:
       - platform: time
         at: "00:01:00"
 
     action:
-      - service: script.living_room_after_party
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_after_party
 
     mode: single
-
-# ============================================================================
-# NFC OVERRIDE CARDS - Manual scene control
-# ============================================================================
-
-  # NFC Override: Arrival
-  - alias: "Living Room - NFC Override: Arrival"
-    description: "Scan NFC card to manually trigger Arrival phase"
-
-    trigger:
-      - platform: event
-        event_type: tag_scanned
-        event_data:
-          tag_id: "PLACEHOLDER_TAG_ARRIVAL"
-
-    action:
-      - service: script.living_room_arrival
-
-      # Optional: Play success sound
-      - delay:
-          milliseconds: 300
-      - service: button.press
-        target:
-          entity_id: button.nfc_party_controller_1_play_success
-
-    mode: restart
-
-  # NFC Override: Dinner
-  - alias: "Living Room - NFC Override: Dinner"
-    description: "Scan NFC card to manually trigger Dinner phase"
-
-    trigger:
-      - platform: event
-        event_type: tag_scanned
-        event_data:
-          tag_id: "PLACEHOLDER_TAG_DINNER"
-
-    action:
-      - service: script.living_room_dinner
-
-      # Optional: Play success sound
-      - delay:
-          milliseconds: 300
-      - service: button.press
-        target:
-          entity_id: button.nfc_party_controller_1_play_success
-
-    mode: restart
-
-  # NFC Override: Post-Dinner
-  - alias: "Living Room - NFC Override: Post-Dinner"
-    description: "Scan NFC card to manually trigger Post-Dinner phase"
-
-    trigger:
-      - platform: event
-        event_type: tag_scanned
-        event_data:
-          tag_id: "PLACEHOLDER_TAG_POST_DINNER"
-
-    action:
-      - service: script.living_room_post_dinner
-
-      # Optional: Play success sound
-      - delay:
-          milliseconds: 300
-      - service: button.press
-        target:
-          entity_id: button.nfc_party_controller_1_play_success
-
-    mode: restart
-
-  # NFC Override: Prime Time
-  - alias: "Living Room - NFC Override: Prime Time"
-    description: "Scan NFC card to manually trigger Prime Time phase"
-
-    trigger:
-      - platform: event
-        event_type: tag_scanned
-        event_data:
-          tag_id: "PLACEHOLDER_TAG_PRIME_TIME"
-
-    action:
-      - service: script.living_room_prime_time
-
-      # Optional: Play success sound
-      - delay:
-          milliseconds: 300
-      - service: button.press
-        target:
-          entity_id: button.nfc_party_controller_1_play_success
-
-    mode: restart
-
-  # NFC Override: After Party
-  - alias: "Living Room - NFC Override: After Party"
-    description: "Scan NFC card to manually trigger After Party phase"
-
-    trigger:
-      - platform: event
-        event_type: tag_scanned
-        event_data:
-          tag_id: "PLACEHOLDER_TAG_AFTER_PARTY"
-
-    action:
-      - service: script.living_room_after_party
-
-      # Optional: Play success sound
-      - delay:
-          milliseconds: 300
-      - service: button.press
-        target:
-          entity_id: button.nfc_party_controller_1_play_success
-
-    mode: restart
