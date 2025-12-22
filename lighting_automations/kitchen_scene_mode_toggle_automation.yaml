@@ -1,0 +1,53 @@
+# Kitchen Scene/Static Mode Toggle - NFC Card Control
+#
+# PLACEHOLDERS TO REPLACE:
+# - PLACEHOLDER_TAG_SCENE_TOGGLE → NFC tag UID for toggling scene/static mode
+#
+# BEHAVIOR:
+# - Works on both Device 1 (Living Room) and Device 2 (Kitchen)
+# - Toggles input_boolean.enable_scenes_device_2
+# - TRUE = Scene Mode (dynamic Hue scenes)
+# - FALSE = Static Mode (static colors)
+# - Plays success sound on the device that scanned the tag
+# - Lighting changes take effect on next playlist scan
+
+automation:
+  - alias: "Kitchen - Toggle Scene/Static Mode"
+    description: "Toggle between dynamic Hue scenes and static colors in kitchen"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+        event_data:
+          tag_id: "PLACEHOLDER_TAG_SCENE_TOGGLE"
+
+    action:
+      # Toggle the scene mode boolean
+      - service: input_boolean.toggle
+        target:
+          entity_id: input_boolean.enable_scenes_device_2
+
+      # Play success sound on whichever device scanned the tag
+      - delay:
+          milliseconds: 300
+
+      - choose:
+          # Device 1 scanned (Living Room)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.device_id == '8dc4434bc67e5ff7970e50337b15e8da' }}"
+            sequence:
+              - service: button.press
+                target:
+                  entity_id: button.nfc_party_controller_1_play_success
+
+          # Device 2 scanned (Kitchen)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.device_id == 'c2c429cbccd32c459c05662a24505349' }}"
+            sequence:
+              - service: button.press
+                target:
+                  entity_id: button.nfc_party_controller_2_play_success
+
+    mode: restart
