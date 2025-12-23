@@ -11,36 +11,9 @@ esphome:
   name: ${device_name}
   comment: ${device_description}
 
-# Import all common configuration
+# Import all common configuration (includes volume potentiometer)
 packages:
   common: !include common.yaml
-
-# Additional sensor specific to ESP32 #2
-sensor:
-  # Volume potentiometer
-  - platform: adc
-    pin: GPIO34
-    name: "${friendly_name} Volume Pot"
-    id: volume_pot
-    attenuation: 12db
-    update_interval: 100ms
-    filters:
-      # Sliding window average for smoothing (larger window to reduce noise)
-      - sliding_window_moving_average:
-          window_size: 10
-          send_every: 2
-      # Convert to percentage using actual measured voltage range
-      - calibrate_linear:
-          - 0.142 -> 0.0
-          - 3.118 -> 100.0
-      - clamp:
-          min_value: 0
-          max_value: 100
-          ignore_out_of_range: true
-      # Only send updates when change > 3% (increased to ignore noise)
-      - delta: 2.0
-    unit_of_measurement: "%"
-    accuracy_decimals: 0
 
 # Physical button specific to ESP32 #2
 binary_sensor:
