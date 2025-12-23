@@ -1,0 +1,198 @@
+blueprint:
+  name: NFC Music Control - Playlist Rotation (SpotifyPlus)
+  description: |
+    **Version: 5.0 - Dual Device Support with Playlist Rotation**
+
+    Tap NFC card → Play playlist from rotation list.
+    Each tap cycles to the next playlist in the rotation.
+
+    Device 1: Only plays if playlists are allowed (via toggle card)
+    Device 2: Always plays playlists
+  author: Søren
+  domain: automation
+  input:
+    tag_id:
+      name: NFC Tag ID
+      description: Enter the full tag UID
+      selector:
+        text:
+          multiline: false
+
+    playlist_rotation:
+      name: Playlist Rotation Helper
+      description: Select the input_select helper with playlist URIs
+      selector:
+        entity:
+          domain: input_select
+          multiple: false
+
+    shuffle:
+      name: Shuffle Mode
+      default: true
+      selector:
+        boolean:
+
+    repeat:
+      name: Repeat Mode
+      default: all
+      selector:
+        select:
+          options:
+            - label: All (Whole Playlist)
+              value: all
+            - label: One (Repeat One Song)
+              value: one
+            - label: 'Off'
+              value: 'off'
+          multiple: false
+
+    device_1_id:
+      name: Device 1 ID
+      description: Device ID for ESP32 #1
+      default: "8dc4434bc67e5ff7970e50337b15e8da"
+      selector:
+        text:
+
+    device_2_id:
+      name: Device 2 ID
+      description: Device ID for ESP32 #2
+      default: "c2c429cbccd32c459c05662a24505349"
+      selector:
+        text:
+
+    device_1_media_player:
+      name: Device 1 Media Player
+      description: SpotifyPlus media player for Device 1
+      default: "media_player.spotifyplus_soren_kjaedegaard_haug"
+      selector:
+        text:
+
+    device_2_media_player:
+      name: Device 2 Media Player
+      description: SpotifyPlus media player for Device 2
+      default: "media_player.spotifyplus_soren_nytar"
+      selector:
+        text:
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  playlist_rotation: !input playlist_rotation
+  current_playlist: "{{ states(playlist_rotation) }}"
+  device_1_id: !input device_1_id
+  device_2_id: !input device_2_id
+  device_1_media_player: !input device_1_media_player
+  device_2_media_player: !input device_2_media_player
+  shuffle: !input shuffle
+  repeat: !input repeat
+
+trigger:
+  - platform: tag
+    tag_id: !input tag_id
+
+action:
+  - choose:
+      # Device 1 - Check if playlists are allowed
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_1_id }}"
+        sequence:
+          - choose:
+              # Playlists allowed on Device 1
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.playlist_allowed_on_device_1
+                    state: "on"
+                sequence:
+                  # Play the current playlist on Device 1
+                  - service: media_player.play_media
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      media_content_type: playlist
+                      media_content_id: "{{ current_playlist }}"
+
+                  # Set shuffle mode
+                  - service: media_player.shuffle_set
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      shuffle: "{{ shuffle }}"
+
+                  # Set repeat mode
+                  - service: media_player.repeat_set
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      repeat: "{{ repeat }}"
+
+                  # Rotate to next playlist
+                  - service: input_select.select_next
+                    target:
+                      entity_id: "{{ playlist_rotation }}"
+                    data:
+                      cycle: true
+
+                  # Play success sound
+                  - delay:
+                      milliseconds: 300
+                  - service: button.press
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_success
+
+            # Playlists not allowed on Device 1 - reject
+            default:
+              - delay:
+                  milliseconds: 300
+              - service: button.press
+                target:
+                  entity_id: button.nfc_party_controller_1_play_failure
+
+      # Device 2 - Always allow playlists
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_2_id }}"
+        sequence:
+          # Play the current playlist on Device 2
+          - service: media_player.play_media
+            target:
+              entity_id: "{{ device_2_media_player }}"
+            data:
+              media_content_type: playlist
+              media_content_id: "{{ current_playlist }}"
+
+          # Set shuffle mode
+          - service: media_player.shuffle_set
+            target:
+              entity_id: "{{ device_2_media_player }}"
+            data:
+              shuffle: "{{ shuffle }}"
+
+          # Set repeat mode
+          - service: media_player.repeat_set
+            target:
+              entity_id: "{{ device_2_media_player }}"
+            data:
+              repeat: "{{ repeat }}"
+
+          # Update Device 2 base playlist helper (so it remembers this for resume)
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.device_2_base_playlist_uri
+            data:
+              value: "{{ current_playlist }}"
+
+          # Rotate to next playlist
+          - service: input_select.select_next
+            target:
+              entity_id: "{{ playlist_rotation }}"
+            data:
+              cycle: true
+
+          # Play success sound
+          - delay:
+              milliseconds: 300
+          - service: button.press
+            target:
+              entity_id: button.nfc_party_controller_2_play_success

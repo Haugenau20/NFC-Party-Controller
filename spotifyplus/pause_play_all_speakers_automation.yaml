@@ -1,0 +1,127 @@
+alias: "Admin - Pause/Play All Speakers (SpotifyPlus)"
+description: "Admin-only: Pauses or plays all speakers based on their current states"
+
+trigger:
+  - platform: event
+    event_type: tag_scanned
+    event_data:
+      tag_id: "04-CA-F5-AE-7A-26-81"  
+
+action:
+  # Play master sound
+  - delay:
+      milliseconds: 300
+  - service: button.press
+    target:
+      entity_id: button.nfc_party_controller_1_play_master
+
+  # Wait for master sound to finish (roughly)
+  - delay:
+      milliseconds: 2000
+
+  - choose:
+      # Case 1: If EITHER speaker is playing → Pause BOTH
+      - conditions:
+          - or:
+              - condition: state
+                entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+                state: 'playing'
+              - condition: state
+                entity_id: media_player.spotifyplus_soren_nytar
+                state: 'playing'
+        sequence:
+          - service: media_player.media_pause
+            target:
+              entity_id:
+                - media_player.spotifyplus_soren_kjaedegaard_haug
+                - media_player.spotifyplus_soren_nytar
+
+      # Case 2: Both are paused → Play both
+      - conditions:
+          - condition: state
+            entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+            state: 'paused'
+          - condition: state
+            entity_id: media_player.spotifyplus_soren_nytar
+            state: 'paused'
+        sequence:
+          - service: media_player.media_play
+            target:
+              entity_id:
+                - media_player.spotifyplus_soren_kjaedegaard_haug
+                - media_player.spotifyplus_soren_nytar
+
+      # Case 3: Both are idle → Start both with base playlists
+      - conditions:
+          - condition: template
+            value_template: "{{ not is_state('media_player.spotifyplus_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotifyplus_soren_kjaedegaard_haug', 'paused') }}"
+          - condition: template
+            value_template: "{{ not is_state('media_player.spotifyplus_soren_nytar', 'playing') and not is_state('media_player.spotifyplus_soren_nytar', 'paused') }}"
+        sequence:
+          # Start Device 1 (Living room)
+          - service: media_player.play_media
+            target:
+              entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+            data:
+              media_content_type: playlist
+              media_content_id: "{{ states('input_text.base_playlist_uri') }}"
+
+          # Start Device 2 (Kitchen)
+          - service: media_player.play_media
+            target:
+              entity_id: media_player.spotifyplus_soren_nytar
+            data:
+              media_content_type: playlist
+              media_content_id: "{{ states('input_text.device_2_base_playlist_uri') }}"
+
+    # Default: Mixed states (one idle, one paused, or other combinations)
+    default:
+      # Handle Device 1 based on its state
+      - choose:
+          # Device 1 is idle → Start it with base playlist
+          - conditions:
+              - condition: template
+                value_template: "{{ not is_state('media_player.spotifyplus_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotifyplus_soren_kjaedegaard_haug', 'paused') }}"
+            sequence:
+              - service: media_player.play_media
+                target:
+                  entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+                data:
+                  media_content_type: playlist
+                  media_content_id: "{{ states('input_text.base_playlist_uri') }}"
+
+          # Device 1 is paused → Resume it
+          - conditions:
+              - condition: state
+                entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+                state: 'paused'
+            sequence:
+              - service: media_player.media_play
+                target:
+                  entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+
+      # Handle Device 2 based on its state
+      - choose:
+          # Device 2 is idle → Start it with base playlist
+          - conditions:
+              - condition: template
+                value_template: "{{ not is_state('media_player.spotifyplus_soren_nytar', 'playing') and not is_state('media_player.spotifyplus_soren_nytar', 'paused') }}"
+            sequence:
+              - service: media_player.play_media
+                target:
+                  entity_id: media_player.spotifyplus_soren_nytar
+                data:
+                  media_content_type: playlist
+                  media_content_id: "{{ states('input_text.device_2_base_playlist_uri') }}"
+
+          # Device 2 is paused → Resume it
+          - conditions:
+              - condition: state
+                entity_id: media_player.spotifyplus_soren_nytar
+                state: 'paused'
+            sequence:
+              - service: media_player.media_play
+                target:
+                  entity_id: media_player.spotifyplus_soren_nytar
+
+mode: single  # Prevent simultaneous executions

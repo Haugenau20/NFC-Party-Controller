@@ -14,7 +14,7 @@ automation:
     action:
       - action: media_player.volume_set
         target:
-          entity_id: media_player.stue_1140714430_spotcast
+          entity_id: media_player.spotify_soren_kjaedegaard_haug
         data:
           # Convert 0-100% sensor value to 0.0-1.0 volume level
           volume_level: "{{ (trigger.to_state.state | float) / 100 }}"

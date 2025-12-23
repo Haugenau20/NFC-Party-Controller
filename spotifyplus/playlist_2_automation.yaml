@@ -1,0 +1,8 @@
+use_blueprint:
+  path: homeassistant/nfc_playlist_switch_blueprint.yaml
+  input:
+    playlist_name: "New Year Playlist 2"
+    tag_id: "04-AA-65-AF-7A-26-81"
+    spotify_uri: "spotify:playlist:1P3TgpMZ19Owy3oXWhQj52"
+    device_1_media_player: "media_player.spotifyplus_soren_kjaedegaard_haug"
+    base_playlist_helper: "input_text.base_playlist_uri"
