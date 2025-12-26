@@ -45,11 +45,19 @@ action:
             entity_id: media_player.spotifyplus_soren_nytar
             state: 'paused'
         sequence:
-          - service: media_player.media_play
-            target:
-              entity_id:
-                - media_player.spotifyplus_soren_kjaedegaard_haug
-                - media_player.spotifyplus_soren_nytar
+          # Transfer Device 1 to correct speaker and resume
+          - service: spotifyplus.player_transfer_playback
+            data:
+              entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+              device_id: "0878ad3f043dc6651edf83f71a7949a6318a3fbe"
+              play: true
+
+          # Transfer Device 2 to correct speaker and resume
+          - service: spotifyplus.player_transfer_playback
+            data:
+              entity_id: media_player.spotifyplus_soren_nytar
+              device_id: "bf5a8c6dec19164ebccafb965417175d8bd3e17a"
+              play: true
 
       # Case 3: Both are idle → Start both with base playlists
       - conditions:
@@ -58,21 +66,19 @@ action:
           - condition: template
             value_template: "{{ not is_state('media_player.spotifyplus_soren_nytar', 'playing') and not is_state('media_player.spotifyplus_soren_nytar', 'paused') }}"
         sequence:
-          # Start Device 1 (Living room)
-          - service: media_player.play_media
-            target:
+          # Start Device 1 (Living room) - play playlist on specific device
+          - service: spotifyplus.player_media_play_context
+            data:
               entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
-            data:
-              media_content_type: playlist
-              media_content_id: "{{ states('input_text.base_playlist_uri') }}"
+              context_uri: "{{ states('input_text.base_playlist_uri') }}"
+              device_id: "0878ad3f043dc6651edf83f71a7949a6318a3fbe"
 
-          # Start Device 2 (Kitchen)
-          - service: media_player.play_media
-            target:
-              entity_id: media_player.spotifyplus_soren_nytar
+          # Start Device 2 (Kitchen) - play playlist on specific device
+          - service: spotifyplus.player_media_play_context
             data:
-              media_content_type: playlist
-              media_content_id: "{{ states('input_text.device_2_base_playlist_uri') }}"
+              entity_id: media_player.spotifyplus_soren_nytar
+              context_uri: "{{ states('input_text.device_2_base_playlist_uri') }}"
+              device_id: "bf5a8c6dec19164ebccafb965417175d8bd3e17a"
 
     # Default: Mixed states (one idle, one paused, or other combinations)
     default:
@@ -83,12 +89,11 @@ action:
               - condition: template
                 value_template: "{{ not is_state('media_player.spotifyplus_soren_kjaedegaard_haug', 'playing') and not is_state('media_player.spotifyplus_soren_kjaedegaard_haug', 'paused') }}"
             sequence:
-              - service: media_player.play_media
-                target:
-                  entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+              - service: spotifyplus.player_media_play_context
                 data:
-                  media_content_type: playlist
-                  media_content_id: "{{ states('input_text.base_playlist_uri') }}"
+                  entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+                  context_uri: "{{ states('input_text.base_playlist_uri') }}"
+                  device_id: "0878ad3f043dc6651edf83f71a7949a6318a3fbe"
 
           # Device 1 is paused → Resume it
           - conditions:
@@ -96,9 +101,11 @@ action:
                 entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
                 state: 'paused'
             sequence:
-              - service: media_player.media_play
-                target:
+              - service: spotifyplus.player_transfer_playback
+                data:
                   entity_id: media_player.spotifyplus_soren_kjaedegaard_haug
+                  device_id: "0878ad3f043dc6651edf83f71a7949a6318a3fbe"
+                  play: true
 
       # Handle Device 2 based on its state
       - choose:
@@ -107,12 +114,11 @@ action:
               - condition: template
                 value_template: "{{ not is_state('media_player.spotifyplus_soren_nytar', 'playing') and not is_state('media_player.spotifyplus_soren_nytar', 'paused') }}"
             sequence:
-              - service: media_player.play_media
-                target:
-                  entity_id: media_player.spotifyplus_soren_nytar
+              - service: spotifyplus.player_media_play_context
                 data:
-                  media_content_type: playlist
-                  media_content_id: "{{ states('input_text.device_2_base_playlist_uri') }}"
+                  entity_id: media_player.spotifyplus_soren_nytar
+                  context_uri: "{{ states('input_text.device_2_base_playlist_uri') }}"
+                  device_id: "bf5a8c6dec19164ebccafb965417175d8bd3e17a"
 
           # Device 2 is paused → Resume it
           - conditions:
@@ -120,8 +126,10 @@ action:
                 entity_id: media_player.spotifyplus_soren_nytar
                 state: 'paused'
             sequence:
-              - service: media_player.media_play
-                target:
+              - service: spotifyplus.player_transfer_playback
+                data:
                   entity_id: media_player.spotifyplus_soren_nytar
+                  device_id: "bf5a8c6dec19164ebccafb965417175d8bd3e17a"
+                  play: true
 
 mode: single  # Prevent simultaneous executions
