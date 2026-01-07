@@ -1,5 +1,5 @@
 blueprint:
-  name: NFC Music Control - Playlist Rotation
+  name: NFC Music Control - Playlist Rotation (SpotifyPlus)
   description: |
     **Version: 5.0 - Dual Device Support with Playlist Rotation**
 
@@ -34,14 +34,14 @@ blueprint:
 
     repeat:
       name: Repeat Mode
-      default: context
+      default: all
       selector:
         select:
           options:
-            - label: Context (Whole Playlist)
-              value: context
-            - label: Track (Repeat One Song)
-              value: track
+            - label: All (Whole Playlist)
+              value: all
+            - label: One (Repeat One Song)
+              value: one
             - label: 'Off'
               value: 'off'
           multiple: false
@@ -60,6 +60,20 @@ blueprint:
       selector:
         text:
 
+    device_1_media_player:
+      name: Device 1 Media Player
+      description: SpotifyPlus media player for Device 1
+      default: "media_player.spotifyplus_soren_kjaedegaard_haug"
+      selector:
+        text:
+
+    device_2_media_player:
+      name: Device 2 Media Player
+      description: SpotifyPlus media player for Device 2
+      default: "media_player.spotifyplus_soren_nytar"
+      selector:
+        text:
+
 mode: restart
 max_exceeded: silent
 
@@ -68,6 +82,8 @@ variables:
   current_playlist: "{{ states(playlist_rotation) }}"
   device_1_id: !input device_1_id
   device_2_id: !input device_2_id
+  device_1_media_player: !input device_1_media_player
+  device_2_media_player: !input device_2_media_player
   shuffle: !input shuffle
   repeat: !input repeat
 
@@ -90,15 +106,26 @@ action:
                     state: "on"
                 sequence:
                   # Play the current playlist on Device 1
-                  - service: spotcast.play_media
+                  - service: media_player.play_media
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
                     data:
-                      media_player:
-                        entity_id: media_player.stue_1140714430_spotcast
-                      spotify_uri: "{{ current_playlist }}"
-                      account: "01KACG05YGPRDMAJDPE29KDBKV"
-                      data:
-                        shuffle: "{{ shuffle }}"
-                        repeat: "{{ repeat }}"
+                      media_content_type: playlist
+                      media_content_id: "{{ current_playlist }}"
+
+                  # Set shuffle mode
+                  - service: media_player.shuffle_set
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      shuffle: "{{ shuffle }}"
+
+                  # Set repeat mode
+                  - service: media_player.repeat_set
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      repeat: "{{ repeat }}"
 
                   # Rotate to next playlist
                   - service: input_select.select_next
@@ -128,15 +155,33 @@ action:
             value_template: "{{ trigger.event.data.device_id == device_2_id }}"
         sequence:
           # Play the current playlist on Device 2
-          - service: spotcast.play_media
+          - service: media_player.play_media
+            target:
+              entity_id: "{{ device_2_media_player }}"
             data:
-              media_player:
-                entity_id: media_player.kokken_31fi44dypurzlvw6e6ftr6mu673y_spotcast
-              spotify_uri: "{{ current_playlist }}"
-              account: "01KCE37RQSTJ0G8RREGMB0Y2XQ"
-              data:
-                shuffle: "{{ shuffle }}"
-                repeat: "{{ repeat }}"
+              media_content_type: playlist
+              media_content_id: "{{ current_playlist }}"
+
+          # Set shuffle mode
+          - service: media_player.shuffle_set
+            target:
+              entity_id: "{{ device_2_media_player }}"
+            data:
+              shuffle: "{{ shuffle }}"
+
+          # Set repeat mode
+          - service: media_player.repeat_set
+            target:
+              entity_id: "{{ device_2_media_player }}"
+            data:
+              repeat: "{{ repeat }}"
+
+          # Update Device 2 base playlist helper (so it remembers this for resume)
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.device_2_base_playlist_uri
+            data:
+              value: "{{ current_playlist }}"
 
           # Rotate to next playlist
           - service: input_select.select_next

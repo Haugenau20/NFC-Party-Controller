@@ -1,0 +1,205 @@
+blueprint:
+  name: NFC Song Queue with Limit (SpotifyPlus)
+  description: Add a song to Spotify queue via NFC tag. Device 1 has 3-song limit, Device 2 plays immediately.
+  domain: automation
+  input:
+    song_name:
+      name: Song Name
+      description: Name of the song for identification
+      selector:
+        text:
+    tag_id:
+      name: NFC Tag ID
+      description: The ID of the NFC tag
+      selector:
+        text:
+    spotify_uri:
+      name: Spotify URI
+      description: The Spotify track URI (spotify:track:xxxxx)
+      selector:
+        text:
+    device_1_id:
+      name: Device 1 ID
+      description: Device ID for ESP32 #1
+      default: "8dc4434bc67e5ff7970e50337b15e8da"
+      selector:
+        text:
+    device_2_id:
+      name: Device 2 ID
+      description: Device ID for ESP32 #2
+      default: "c2c429cbccd32c459c05662a24505349"
+      selector:
+        text:
+    device_1_media_player:
+      name: Device 1 Media Player
+      description: SpotifyPlus media player for Device 1
+      default: "media_player.spotifyplus_soren_kjaedegaard_haug"
+      selector:
+        text:
+    device_2_media_player:
+      name: Device 2 Media Player
+      description: SpotifyPlus media player for Device 2
+      default: "media_player.spotifyplus_soren_nytar"
+      selector:
+        text:
+
+trigger:
+  - platform: tag
+    tag_id: !input tag_id
+
+action:
+  - variables:
+      spotify_uri: !input spotify_uri
+      queue_list: "{{ states('input_text.nfc_queue_tracker') }}"
+      device_1_id: !input device_1_id
+      device_2_id: !input device_2_id
+      device_1_media_player: !input device_1_media_player
+      device_2_media_player: !input device_2_media_player
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_1_id }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ spotify_uri in queue_list }}"
+                sequence:
+                  - delay:
+                      milliseconds: 300
+                  - action: button.press
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_failure
+              - conditions:
+                  - condition: template
+                    value_template: "{{ queue_list.count(',') >= 2 }}"
+                sequence:
+                  - delay:
+                      milliseconds: 300
+                  - action: button.press
+                    target:
+                      entity_id: button.nfc_party_controller_1_play_failure
+              - conditions:
+                  - condition: template
+                    value_template: "{{ not is_state(device_1_media_player, 'playing') and not is_state(device_1_media_player, 'paused') }}"
+                sequence:
+                  # Validate and get base playlist URI (default to Playlist 1 if invalid)
+                  - variables:
+                      base_playlist_uri: >
+                        {% set uri = states('input_text.base_playlist_uri') %}
+                        {% if uri in ['spotify:playlist:3XXQEDPWBEKjgSpAJur8YP', 'spotify:playlist:1P3TgpMZ19Owy3oXWhQj52'] %}
+                          {{ uri }}
+                        {% else %}
+                          spotify:playlist:3XXQEDPWBEKjgSpAJur8YP
+                        {% endif %}
+                  # Start base playlist to establish playback session
+                  - action: media_player.play_media
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      media_content_type: playlist
+                      media_content_id: "{{ base_playlist_uri }}"
+
+                  # Set shuffle mode
+                  - action: media_player.shuffle_set
+                    target:
+                      entity_id: "{{ device_1_media_player }}"
+                    data:
+                      shuffle: true
+
+                  # Wait for session to establish (up to 20 seconds)
+                  - wait_template: "{{ is_state(device_1_media_player, 'playing') or is_state(device_1_media_player, 'paused') }}"
+                    timeout:
+                      seconds: 20
+                    continue_on_timeout: true
+                  # Check if wait was successful (not timed out)
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ wait.completed }}"
+                        sequence:
+                          # Queue the tapped song
+                          - action: media_player.play_media
+                            target:
+                              entity_id: "{{ device_1_media_player }}"
+                            data:
+                              media_content_type: track
+                              media_content_id: "{{ spotify_uri }}"
+                              enqueue: add
+                          # Update queue tracker
+                          - action: input_text.set_value
+                            target:
+                              entity_id: input_text.nfc_queue_tracker
+                            data:
+                              value: "{% if queue_list == '' %}{{ spotify_uri }}{% else %}{{ queue_list }},{{ spotify_uri }}{% endif %}"
+                          # Play success sound
+                          - delay:
+                              milliseconds: 300
+                          - action: button.press
+                            target:
+                              entity_id: button.nfc_party_controller_1_play_success
+                    # Session failed to establish - play failure sound
+                    default:
+                      - delay:
+                          milliseconds: 300
+                      - action: button.press
+                        target:
+                          entity_id: button.nfc_party_controller_1_play_failure
+            default:
+              # Player is active - just add to queue
+              - action: media_player.play_media
+                target:
+                  entity_id: "{{ device_1_media_player }}"
+                data:
+                  media_content_type: track
+                  media_content_id: "{{ spotify_uri }}"
+                  enqueue: add
+              - action: input_text.set_value
+                target:
+                  entity_id: input_text.nfc_queue_tracker
+                data:
+                  value: "{% if queue_list == '' %}{{ spotify_uri }}{% else %}{{ queue_list }},{{ spotify_uri }}{% endif %}"
+              - action: button.press
+                target:
+                  entity_id: button.nfc_party_controller_1_play_success
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == device_2_id }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ not is_state(device_2_media_player, 'playing') and not is_state(device_2_media_player, 'paused') }}"
+                sequence:
+                  # Start playing the tapped song immediately to establish session
+                  - action: media_player.play_media
+                    target:
+                      entity_id: "{{ device_2_media_player }}"
+                    data:
+                      media_content_type: track
+                      media_content_id: "{{ spotify_uri }}"
+                  # Play success sound
+                  - delay:
+                      milliseconds: 300
+                  - action: button.press
+                    target:
+                      entity_id: button.nfc_party_controller_2_play_success
+            default:
+              # Player is active - add to queue and skip to it
+              - action: media_player.play_media
+                target:
+                  entity_id: "{{ device_2_media_player }}"
+                data:
+                  media_content_type: track
+                  media_content_id: "{{ spotify_uri }}"
+                  enqueue: add
+              - delay:
+                  milliseconds: 500
+              - action: media_player.media_next_track
+                target:
+                  entity_id: "{{ device_2_media_player }}"
+              - action: button.press
+                target:
+                  entity_id: button.nfc_party_controller_2_play_success
+
+mode: single

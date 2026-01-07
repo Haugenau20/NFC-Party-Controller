@@ -1,0 +1,183 @@
+# Living Room - New Year's Midnight Countdown Sequence
+#
+# LIVING ROOM LIGHTS (already replaced with actual entity IDs):
+# - light.hue_signe → Signe floor lamp
+# - light.up → Ensis Up light (ambient ceiling wash)
+# - light.down → Ensis Down light (functional task lighting)
+# - light.sengelampe_op → Beyond Up light (ambient table lamp)
+# - light.sengelampe_ned → Beyond Down light (table task lighting)
+#
+# NOTE: All 5 lights work together for maximum dramatic effect during countdown!
+# Triggered automatically at 11:59:00 PM by living_room_party_lighting.yaml
+# No manual NFC trigger - fully automated
+
+# ============================================================================
+# MIDNIGHT COUNTDOWN SCRIPT
+# ============================================================================
+
+script:
+  living_room_midnight_countdown:
+    alias: "Living Room - Midnight Countdown Sequence"
+    description: "60-second countdown sequence building to midnight celebration"
+    sequence:
+      # PHASE 1: Initial dim (11:59:00) - All lights synchronized
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 51  # 20% - Start dim
+          rgb_color: [255, 215, 0]  # Gold
+          transition: 2
+
+      # PHASE 2: Gradual brightness ramp (11:59:00-11:59:50)
+      - delay:
+          seconds: 10
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 102  # 40%
+          transition: 10
+
+      - delay:
+          seconds: 10
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 153  # 60%
+          transition: 10
+
+      - delay:
+          seconds: 10
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 204  # 80%
+          transition: 10
+
+      - delay:
+          seconds: 10
+
+      # PHASE 3: Final 10 seconds - faster pulsing (11:59:50-12:00:00)
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 230  # 90%
+          transition: 2
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 204  # 80%
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 230  # 90%
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 204  # 80%
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 255  # 100% - building to climax
+          transition: 1
+
+      - delay:
+          seconds: 2
+
+      # PHASE 4: MIDNIGHT! Celebration flash (exactly at 12:00:00)
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.hue_signe
+            - light.up
+            - light.down
+            - light.sengelampe_op
+            - light.sengelampe_ned
+        data:
+          brightness: 255  # 100% full brightness
+          rgb_color: [255, 255, 255]  # Pure white flash
+          transition: 0  # Instant
+
+      # Brief flash duration
+      - delay:
+          milliseconds: 500
+
+      # PHASE 5: Settle into After Party scene (celebration colors)
+      - service: scene.turn_on
+        target:
+          entity_id: scene.living_room_after_party
