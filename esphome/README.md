@@ -288,7 +288,6 @@ For complete pin assignments and available expansion pins, see [`/hardware/schem
 ## Resources
 
 **ESPHome Components**:
-- [PN532 Component](https://esphome.io/components/pn532.html)
 - [ADC Sensor](https://esphome.io/components/sensor/adc.html)
 - [RTTTL Component](https://esphome.io/components/rtttl.html)
 - [Binary Sensor GPIO](https://esphome.io/components/binary_sensor/gpio.html)
