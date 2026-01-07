@@ -212,7 +212,7 @@ After uploading firmware:
 1. ESP32 device appears automatically in Home Assistant integrations
 2. Accept the device and enter your API encryption key from `secrets.yaml`
 3. All sensors, buttons, and NFC events available in HA
-4. NFC tags trigger Home Assistant automations (see `/automations/` folder)
+4. NFC tags trigger Home Assistant automations (see `/home-assistant/` folder)
 
 ### Entities Exposed
 
@@ -274,10 +274,11 @@ After uploading firmware:
 - [ESP32 Pinout Reference](/hardware/schematics/esp32_pinout.md) - Complete pin assignments and available expansion pins
 
 **Automation Documentation**:
-- [Device Controls](/automations/device_controls/) - Volume and button automations
-- [NFC Admin Functions](/automations/nfc_admin/) - Queue reset, permissions, system admin
-- [Spotcast Automations](/spotcast/) - Music control automations
-- [SpotifyPlus Automations](/spotifyplus/) - Alternative Spotify integration
+- [Device Controls](/home-assistant/device_controls/) - Volume and button automations
+- [NFC Admin Functions](/home-assistant/nfc_admin/) - Queue reset, permissions, system admin
+- [Spotcast Automations](/home-assistant/spotcast/) - Music control automations
+- [SpotifyPlus Automations](/home-assistant/spotifyplus/) - Alternative Spotify integration
+- [Lighting Automations](/home-assistant/lighting/) - Hue lighting control
 
 **ESPHome Component Documentation**:
 - [ADC Sensor](https://esphome.io/components/sensor/adc.html)
