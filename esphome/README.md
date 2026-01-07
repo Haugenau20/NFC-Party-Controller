@@ -2,7 +2,7 @@
 
 This directory contains ESPHome firmware configurations for the two NFC Party Controller devices.
 
-For hardware details, circuit schematics, and assembly instructions, see [`/hardware/README.md`](/hardware/README.md).
+**Note**: This document covers firmware configuration only. For hardware assembly, circuit schematics, and physical wiring, see the [Related Documentation](#related-documentation) section at the bottom.
 
 ---
 
@@ -12,8 +12,6 @@ This project uses two ESP32 controllers with different firmware configurations:
 
 - **Device 1** (`nfc_controller_1.yaml`) - Living Room (Stue)
 - **Device 2** (`nfc_controller_2.yaml`) - Kitchen (Kokken) - adds pause/play button
-
-See [`/hardware/README.md#device-comparison`](/hardware/README.md#device-comparison) for complete hardware specifications.
 
 ---
 
@@ -115,8 +113,6 @@ The configuration uses ESPHome's package system for code reuse:
 - Plays quick beep for audio feedback (`scan:d=4,o=5,b=100:16e6`)
 - All tag-to-action mapping handled in Home Assistant
 
-For I2C wiring details, see [`/hardware/README.md#pn532-i2c-connection`](/hardware/README.md#pn532-i2c-connection).
-
 ---
 
 ### Volume Potentiometer
@@ -147,8 +143,6 @@ filters:
 - **Delta filter**: Prevents event spam from minor fluctuations
 - **75% clamp**: Prevents guests from making speakers too loud for conversation
 
-For circuit wiring, see [`/hardware/README.md#potentiometer-connection`](/hardware/README.md#potentiometer-connection).
-
 ---
 
 ### Buzzer
@@ -170,8 +164,6 @@ rtttl:
 - **Failure sound**: Buzz pattern
 - **Master sounds**: Rising/falling frequency sweeps
 - All sounds defined in `common.yaml` scripts
-
-For MOSFET circuit details, see [`/hardware/README.md#buzzer-mosfet-switching-circuit`](/hardware/README.md#buzzer-mosfet-switching-circuit).
 
 ---
 
@@ -199,8 +191,6 @@ binary_sensor:
 
 Device 1 does not have this button configured.
 
-For button wiring, see [`/hardware/README.md#button-connection-device-2-only`](/hardware/README.md#button-connection-device-2-only).
-
 ---
 
 ### Power Saving
@@ -212,8 +202,6 @@ wifi:
 ```
 
 This reduces average ESP32 power consumption from ~160-260mA to ~80-120mA.
-
-For battery life estimates, see [`/hardware/README.md#power-considerations`](/hardware/README.md#power-considerations).
 
 ---
 
@@ -273,27 +261,27 @@ After uploading firmware:
 - Check OTA password matches `secrets.yaml`
 - Try USB upload if OTA is problematic
 
-### Hardware issues
-
-For hardware troubleshooting (buzzer not working, button issues, etc.), see [`/hardware/README.md#troubleshooting`](/hardware/README.md#troubleshooting).
-
 ---
 
-## Pin Reference
+## Related Documentation
 
-For complete pin assignments and available expansion pins, see [`/hardware/schematics/esp32_pinout.md`](/hardware/schematics/esp32_pinout.md).
+**Hardware Documentation**:
+- [Hardware Overview](/hardware/README.md) - Complete hardware specifications, component lists, and device comparison
+- [Circuit Schematics](/hardware/README.md#circuit-schematics) - Buzzer MOSFET circuit, PN532 I2C wiring, button connections, potentiometer setup
+- [Assembly Instructions](/hardware/README.md#assembly-instructions) - Step-by-step hardware build guide
+- [Power Considerations](/hardware/README.md#power-considerations) - Battery configuration and power consumption details
+- [Hardware Troubleshooting](/hardware/README.md#troubleshooting) - Common hardware issues (buzzer not working, button issues, etc.)
+- [ESP32 Pinout Reference](/hardware/schematics/esp32_pinout.md) - Complete pin assignments and available expansion pins
 
----
+**Automation Documentation**:
+- [Device Controls](/automations/device_controls/) - Volume and button automations
+- [NFC Admin Functions](/automations/nfc_admin/) - Queue reset, permissions, system admin
+- [Spotcast Automations](/spotcast/) - Music control automations
+- [SpotifyPlus Automations](/spotifyplus/) - Alternative Spotify integration
 
-## Resources
-
-**ESPHome Components**:
+**ESPHome Component Documentation**:
 - [ADC Sensor](https://esphome.io/components/sensor/adc.html)
 - [RTTTL Component](https://esphome.io/components/rtttl.html)
 - [Binary Sensor GPIO](https://esphome.io/components/binary_sensor/gpio.html)
 - [Home Assistant Integration](https://esphome.io/components/api.html)
 - [WiFi Component](https://esphome.io/components/wifi.html)
-
-**Hardware Documentation**:
-- [Hardware README](/hardware/README.md) - Circuit schematics and assembly
-- [ESP32 Pinout](/hardware/schematics/esp32_pinout.md) - Complete pin reference
