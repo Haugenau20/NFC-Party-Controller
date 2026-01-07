@@ -1,0 +1,822 @@
+# Kitchen Playlist-Based Lighting - Scene/Static Mode System
+#
+# REQUIRED HELPERS - Create these in Home Assistant UI (Settings → Helpers):
+#
+# 1. Boolean Toggle:
+#    input_boolean.enable_scenes_device_2
+#      Name: "Enable Scenes on Device 2"
+#      Default: true
+#      Icon: mdi:palette (optional)
+#      tag id: 04-75-E8-AE-7A-26-81
+#
+# 2. Energetic Scene Rotation:
+#    input_select.kitchen_energetic_scene_rotation
+#      Name: "Kitchen Energetic Scene Rotation"
+#      Options:
+#        - PLACEHOLDER_SCENE_ENERGETIC_1
+#        - PLACEHOLDER_SCENE_ENERGETIC_2
+#        - PLACEHOLDER_SCENE_ENERGETIC_3
+#        - PLACEHOLDER_SCENE_ENERGETIC_4
+#        - PLACEHOLDER_SCENE_ENERGETIC_5
+#
+# 3. Chill Scene Rotation:
+#    input_select.kitchen_chill_scene_rotation
+#      Name: "Kitchen Chill Scene Rotation"
+#      Options:
+#        - PLACEHOLDER_SCENE_CHILL_1
+#        - PLACEHOLDER_SCENE_CHILL_2
+#        - PLACEHOLDER_SCENE_CHILL_3
+#        - PLACEHOLDER_SCENE_CHILL_4
+#
+# PLACEHOLDERS TO REPLACE:
+# - PLACEHOLDER_SCENE_ENERGETIC_1-5 → Your Hue scene entity IDs (e.g., scene.kitchen_soho)
+# - PLACEHOLDER_SCENE_CHILL_1-4 → Your Hue chill scene entity IDs
+# - PLACEHOLDER_TAG_[PLAYLIST] → Replace with actual NFC tag UIDs for each playlist
+# - button.nfc_party_controller_2_play_success → Device 2 success sound (already exists)
+#
+# KITCHEN LIGHTS:
+# - light.kokken → Aurelle 60x60cm ceiling panel (white ambiance only)
+# - light.hue_lightstrip_plus_1 → Main lightstrip (color capable)
+# - light.kokken_top → Extra 2m lightstrip (color capable)
+#
+# DESIGN PHILOSOPHY:
+# - Scene Mode (default): Dynamic Hue scenes that cycle colors automatically
+# - Static Mode (toggle): Static colors with rotation on each playlist scan
+# - Aurelle (ceiling panel): White ambiance only - brightness/temperature varies
+# - Lightstrips: Full RGB colors - match scenes or static palette
+# - Categories: Energetic (bright/saturated) vs Chill (calm/cool)
+
+# ============================================================================
+# SCRIPTS - Static Color Palettes (Used when Scene Mode is OFF)
+# ============================================================================
+
+script:
+  # Energetic Category - Electric Blue
+  kitchen_energetic_electric_blue:
+    alias: "Kitchen Energetic - Electric Blue"
+    sequence:
+      # Aurelle: Cool white, high brightness (no color capability)
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 220  # 86% brightness
+          color_temp: 250  # Cool white
+          transition: 2
+
+      # Main Lightstrip: Electric Blue
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 200  # 78% brightness
+          rgb_color: [0, 191, 255]  # Electric Blue
+          transition: 2
+
+      # Extra 2m Lightstrip: Electric Blue
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 200
+          rgb_color: [0, 191, 255]
+          transition: 2
+
+  # Energetic Category - Hot Magenta
+  kitchen_energetic_hot_magenta:
+    alias: "Kitchen Energetic - Hot Magenta"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 200
+          rgb_color: [255, 0, 144]  # Hot Magenta
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 200
+          rgb_color: [255, 0, 144]
+          transition: 2
+
+  # Energetic Category - Vibrant Orange
+  kitchen_energetic_vibrant_orange:
+    alias: "Kitchen Energetic - Vibrant Orange"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 200
+          rgb_color: [255, 140, 0]  # Vibrant Orange
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 200
+          rgb_color: [255, 140, 0]
+          transition: 2
+
+  # Energetic Category - Lime Green
+  kitchen_energetic_lime_green:
+    alias: "Kitchen Energetic - Lime Green"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 200
+          rgb_color: [50, 205, 50]  # Lime Green
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 200
+          rgb_color: [50, 205, 50]
+          transition: 2
+
+  # Energetic Category - Purple
+  kitchen_energetic_purple:
+    alias: "Kitchen Energetic - Purple"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 220
+          color_temp: 250
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 200
+          rgb_color: [138, 43, 226]  # Purple
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 200
+          rgb_color: [138, 43, 226]
+          transition: 2
+
+  # Chill Category - Cool Teal
+  kitchen_chill_cool_teal:
+    alias: "Kitchen Chill - Cool Teal"
+    sequence:
+      # Aurelle: Warm white, medium brightness
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 150  # 59% brightness
+          color_temp: 400  # Warm white
+          transition: 2
+
+      # Main Lightstrip: Cool Teal
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 160  # 63% brightness
+          rgb_color: [0, 150, 150]  # Cool Teal
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 160
+          rgb_color: [0, 150, 150]
+          transition: 2
+
+  # Chill Category - Soft Purple
+  kitchen_chill_soft_purple:
+    alias: "Kitchen Chill - Soft Purple"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 150
+          color_temp: 400
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 160
+          rgb_color: [147, 112, 219]  # Soft Purple
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 160
+          rgb_color: [147, 112, 219]
+          transition: 2
+
+  # Chill Category - Warm White
+  kitchen_chill_warm_white:
+    alias: "Kitchen Chill - Warm White"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 150
+          color_temp: 400
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 160
+          rgb_color: [255, 228, 181]  # Warm White
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 160
+          rgb_color: [255, 228, 181]
+          transition: 2
+
+  # Chill Category - Deep Blue
+  kitchen_chill_deep_blue:
+    alias: "Kitchen Chill - Deep Blue"
+    sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken
+        data:
+          brightness: 150
+          color_temp: 400
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_lightstrip_plus_1
+        data:
+          brightness: 160
+          rgb_color: [25, 25, 112]  # Deep Blue
+          transition: 2
+
+      - service: light.turn_on
+        target:
+          entity_id: light.kokken_top
+        data:
+          brightness: 160
+          rgb_color: [25, 25, 112]
+          transition: 2
+
+# ============================================================================
+# AUTOMATION - Playlist NFC Scans Control Kitchen Lights
+# ============================================================================
+
+automation:
+  - alias: "Kitchen - Playlist-Based Lighting Control"
+    description: "Changes kitchen lights based on playlist category - Scene or Static mode"
+
+    trigger:
+      - platform: event
+        event_type: tag_scanned
+
+    condition:
+      # Only trigger on Device 2 (Kitchen)
+      - condition: template
+        value_template: "{{ trigger.event.data.device_id == 'c2c429cbccd32c459c05662a24505349' }}"
+
+    action:
+      - choose:
+          # ==================== ENERGETIC CATEGORY ====================
+
+          # 80s
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-7B-75-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  # Scene Mode
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                # Static Mode
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # 90s
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-84-8C-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # 00s (2000s)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-11-AD-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # 10s (2010s)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-21-39-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # 20s (2020s)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-61-47-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # Disco
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-DC-41-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # Rock
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-3B-85-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # House
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-89-55-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # HipHop
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-1D-B4-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # Party
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-B8-4E-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # Rap
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-98-33-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # Singalong
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-98-93-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # MGP (Danish children's song contest)
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-9C-26-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # Dansk Top
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-25-9E-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_energetic_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_energetic_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_energetic_{{ states('input_select.kitchen_energetic_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_energetic_color_rotation
+                    data:
+                      cycle: true
+
+          # ==================== CHILL CATEGORY ====================
+
+          # Chill
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-B5-66-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_chill_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_chill_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_chill_color_rotation
+                    data:
+                      cycle: true
+
+          # Jazz
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-BF-5F-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_chill_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_chill_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_chill_color_rotation
+                    data:
+                      cycle: true
+
+          # Elevator
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-EB-7F-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_chill_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_chill_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_chill_color_rotation
+                    data:
+                      cycle: true
+
+          # Lounge
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.tag_id == '04-48-FB-AE-7A-26-81' }}"
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.enable_scenes_device_2
+                        state: "on"
+                    sequence:
+                      - service: scene.turn_on
+                        target:
+                          entity_id: "{{ states('input_select.kitchen_chill_scene_rotation') }}"
+                      - service: input_select.select_next
+                        target:
+                          entity_id: input_select.kitchen_chill_scene_rotation
+                        data:
+                          cycle: true
+                default:
+                  - service: "script.kitchen_chill_{{ states('input_select.kitchen_chill_color_rotation') | lower | replace(' ', '_') }}"
+                  - service: input_select.select_next
+                    target:
+                      entity_id: input_select.kitchen_chill_color_rotation
+                    data:
+                      cycle: true
+
+    mode: restart

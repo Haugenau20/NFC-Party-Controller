@@ -6,9 +6,20 @@ automation:
       - platform: event
         event_type: tag_scanned
         event_data:
-          tag_id: "PLACEHOLDER-ADMIN-PAUSE-PLAY-ALL"  # Replace with actual admin NFC tag UID
+          tag_id: "04-CA-F5-AE-7A-26-81"  # Replace with actual admin NFC tag UID
 
     action:
+      # Play master sound
+      - delay:
+          milliseconds: 300
+      - service: button.press
+        target:
+          entity_id: button.nfc_party_controller_1_play_master
+
+      # Wait for master sound to finish (roughly)
+      - delay:
+          milliseconds: 2000
+
       - choose:
           # Case 1: If EITHER speaker is playing → Pause BOTH
           - conditions:

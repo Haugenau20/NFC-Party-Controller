@@ -1,0 +1,80 @@
+blueprint:
+  name: NFC Playlist Switcher for Device 1 (SpotifyPlus)
+  description: Starts a playlist on Device 1 and sets it as the base playlist for idle recovery
+  domain: automation
+  input:
+    playlist_name:
+      name: Playlist Name
+      description: Name of the playlist for identification
+      selector:
+        text:
+    tag_id:
+      name: NFC Tag ID
+      description: The ID of the NFC tag
+      selector:
+        text:
+    spotify_uri:
+      name: Spotify Playlist URI
+      description: The Spotify playlist URI (spotify:playlist:xxxxx)
+      selector:
+        text:
+    device_1_media_player:
+      name: Device 1 Media Player
+      description: Media player entity for Device 1
+      default: "media_player.spotifyplus_soren_kjaedegaard_haug"
+      selector:
+        text:
+    base_playlist_helper:
+      name: Base Playlist Helper
+      description: Input text helper that stores the current base playlist URI
+      default: "input_text.base_playlist_uri"
+      selector:
+        text:
+
+trigger:
+  - platform: tag
+    tag_id: !input tag_id
+
+action:
+  - variables:
+      spotify_uri: !input spotify_uri
+      device_1_media_player: !input device_1_media_player
+      base_playlist_helper: !input base_playlist_helper
+
+  # Start playing playlist
+  - action: media_player.play_media
+    target:
+      entity_id: "{{ device_1_media_player }}"
+    data:
+      media_content_type: playlist
+      media_content_id: "{{ spotify_uri }}"
+
+  # Set shuffle mode
+  - action: media_player.shuffle_set
+    target:
+      entity_id: "{{ device_1_media_player }}"
+    data:
+      shuffle: true
+
+  # Set repeat mode to context (whole playlist)
+  - action: media_player.repeat_set
+    target:
+      entity_id: "{{ device_1_media_player }}"
+    data:
+      repeat: all
+
+  # Update base playlist helper
+  - action: input_text.set_value
+    target:
+      entity_id: "{{ base_playlist_helper }}"
+    data:
+      value: "{{ spotify_uri }}"
+
+  # Play success sound on Device 1
+  - delay:
+      milliseconds: 300
+  - action: button.press
+    target:
+      entity_id: button.nfc_party_controller_1_play_success
+
+mode: single

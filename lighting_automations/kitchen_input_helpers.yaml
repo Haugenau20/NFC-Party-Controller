@@ -1,0 +1,28 @@
+# Kitchen Lighting - Input Helpers for Color Rotation
+#
+# These helpers track which color in each category's palette should be used next.
+# This allows colors to rotate each time a playlist from the same category is scanned.
+
+input_select:
+  # Tracks current color for Energetic category playlists
+  kitchen_energetic_color_rotation:
+    name: "Kitchen Energetic Color Rotation"
+    options:
+      - "Electric Blue"
+      - "Hot Magenta"
+      - "Vibrant Orange"
+      - "Lime Green"
+      - "Purple"
+    initial: "Electric Blue"
+    icon: mdi:palette
+
+  # Tracks current color for Chill category playlists
+  kitchen_chill_color_rotation:
+    name: "Kitchen Chill Color Rotation"
+    options:
+      - "Cool Teal"
+      - "Soft Purple"
+      - "Warm White"
+      - "Deep Blue"
+    initial: "Cool Teal"
+    icon: mdi:palette

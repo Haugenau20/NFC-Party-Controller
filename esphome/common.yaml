@@ -11,6 +11,7 @@ esp32:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  power_save_mode: light
 
   # Enable fallback hotspot for initial setup
   ap:
@@ -44,6 +45,7 @@ i2c:
 # PN532 NFC Reader
 pn532_i2c:
   id: pn532_board
+  update_interval: 1s
   on_tag:
     then:
       # Send tag UID to Home Assistant for processing
@@ -146,29 +148,28 @@ button:
 
 # Common sensors for both devices
 sensor:
-  # WiFi signal strength
-  - platform: wifi_signal
-    name: "${friendly_name} WiFi Signal"
-    update_interval: 60s
+  # Volume potentiometer (shared by all devices with volume control)
+  - platform: adc
+    pin: GPIO34
+    name: "Volume Pot"
+    id: volume_pot
+    attenuation: 12db
+    update_interval: 100ms
+    filters:
+      # Sliding window average for smoothing (larger window to reduce noise)
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 1
+      # Convert to percentage using actual measured voltage range
+      - calibrate_linear:
+          - 0.142 -> 0.0
+          - 3.118 -> 100.0
+      - clamp:
+          min_value: 0
+          max_value: 75
+          ignore_out_of_range: true
+      # Only send updates when change > 2% (increased to ignore noise)
+      - delta: 2.0
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
 
-  # Uptime sensor
-  - platform: uptime
-    name: "${friendly_name} Uptime"
-    update_interval: 60s
-
-# Status LED (using built-in LED for debugging)
-status_led:
-  pin: GPIO2
-
-# Text sensors for device info
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: "${friendly_name} IP Address"
-    ssid:
-      name: "${friendly_name} Connected SSID"
-    mac_address:
-      name: "${friendly_name} MAC Address"
-
-  - platform: version
-    name: "${friendly_name} ESPHome Version"
