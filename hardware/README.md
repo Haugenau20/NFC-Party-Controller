@@ -343,12 +343,7 @@ See `/docs/TROUBLESHOOTING.md` for common hardware issues and solutions.
 
 ## Resources
 
-- [ESP32 Pinout Reference](https://randomnerdtutorials.com/esp32-pinout-reference-gpios/)
-- [PN532 Module Guide](https://www.electrodragon.com/w/PN532_NFC_Module)
+- [ESP32 DevKitC v4 Pinout](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32_devkitC_v4_pinlayout.png)
 - [MOSFET Tutorial](https://learn.sparkfun.com/tutorials/transistors/applications-i-switches)
 - [ESP32 ADC Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/adc.html)
 - [ESPHome Documentation](https://esphome.io/)
-
----
-
-**Status**: Hardware complete and operational, awaiting custom enclosure design
