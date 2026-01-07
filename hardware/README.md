@@ -149,35 +149,28 @@ GND   ----------------  Pin 3 (GND)
 
 ### Per Device
 
-| Qty | Component | Specification | Source | Approx. Cost |
-|-----|-----------|---------------|--------|--------------|
-| 1 | ESP32 DevKitC | USB-C version | AliExpress/Amazon | $8-12 |
-| 1 | PN532 NFC Module | I2C interface, with antenna | AliExpress | $5-8 |
-| 1 | Potentiometer | 10kΩ linear, PCB mount | Local electronics | $1-2 |
-| 1 | Passive buzzer | 5V, through-hole | Local electronics | $1 |
-| 1 | MOSFET | 2N7000 (N-channel, logic-level) | Local electronics | $0.30 |
-| 1 | Schottky diode | 1N5818 | Local electronics | $0.20 |
-| 1 | Breadboard/PCB | For prototyping | Local electronics | $3-5 |
-| - | Jumper wires | M-M, M-F assortment | Local electronics | $3 |
+| Qty | Component | Specification | Source |
+|-----|-----------|---------------|--------|
+| 1 | ESP32 DevKitC | USB-C version | AliExpress/Amazon |
+| 1 | PN532 NFC Module | I2C interface, with antenna | AliExpress |
+| 1 | Potentiometer | 10kΩ linear, PCB mount | Local electronics |
+| 1 | Passive buzzer | 5V, through-hole | Local electronics |
+| 1 | MOSFET | 2N7000 (N-channel, logic-level) | Local electronics |
+| 1 | Schottky diode | 1N5818 | Local electronics |
+| 1 | Breadboard/PCB | For prototyping | Local electronics |
+| - | Jumper wires | M-M, M-F assortment | Local electronics |
 
 ### Device 2 Additional Component
 
-| Qty | Component | Specification | Source | Approx. Cost |
-|-----|-----------|---------------|--------|--------------|
-| 1 | Tactile button | 12mm, through-hole | Local electronics | $0.50 |
+| Qty | Component | Specification | Source |
+|-----|-----------|---------------|--------|
+| 1 | Tactile button | 12mm, through-hole | Local electronics |
 
 ### Shared Components (One-Time Purchase)
 
-| Qty | Component | Specification | Source | Approx. Cost |
-|-----|-----------|---------------|--------|--------------|
-| 150 | NFC tags | NTAG215, 30mm stickers | Amazon | $15-25 |
-
-### Total Cost
-
-- **Device 1**: ~$20-30
-- **Device 2**: ~$21-31
-- **NFC Tags**: ~$15-25
-- **Grand Total (both devices + tags)**: ~$55-85
+| Qty | Component | Specification | Source |
+|-----|-----------|---------------|--------|
+| 150 | NFC tags | NTAG215, 30mm stickers | Amazon |
 
 ---
 
