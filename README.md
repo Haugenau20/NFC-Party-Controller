@@ -1,124 +1,135 @@
 # NFC Party Controller
 
-> Physical NFC cards meet smart home automation for intuitive multi-room audio and party control
+> Tap a card. Play a playlist. Control your home.
 
-An interactive home automation system using NFC-enabled cards to control Spotify playlists, multi-room audio, and coordinated party experiences across Bang & Olufsen speakers.
-
-**Status**: Early Development - Hardware configured, awaiting card printing for full deployment
+A battery-powered, event-driven home automation system using custom ESP32 hardware and NFC cards to control Spotify playback and Philips Hue lighting. Built with ESPHome and Home Assistant, this project showcases embedded systems design, IoT integration, and smart home architecture.
 
 ---
 
-## Features
+## What It Does
 
-- **100 Physical NFC Cards**: Tactile, intuitive music and scene control
-- **Multi-Room Audio**: Seamless Beolink synchronization across Bang & Olufsen speakers
-- **Spotify Integration**: Direct playlist control via NFC card scans
-- **ESP32 Controller**: Custom hardware with buttons, volume control, and NFC reader
-- **Event-Driven Architecture**: Scalable automation framework built on Home Assistant
-- **Party Mode**: Coordinated audio, lighting, and automation scenes
-- **Future**: Philips Hue lighting integration for synchronized visual experiences
+**Physical NFC cards** trigger Spotify playlists, lighting scenes, and system controls through two battery-powered ESP32 devices strategically placed in my home.
+
+- **Music Control**: Scan a card to start a playlist, rotate the potentiometer to adjust volume, press the pause button (kitchen device)
+- **Lighting Automation**: NFC cards trigger Philips Hue lighting scenes coordinated with music playback
+- **Admin Functions**: Dedicated NFC cards reset playback queue, toggle permissions, restart system, or control smart plugs
+- **Battery-Powered**: Each device runs 40-60 hours on 18650 lithium-ion cells with WiFi power-saving optimizations
+- **Event-Driven**: NFC tag IDs aren't hardcoded in firmware—all logic lives in Home Assistant for easy reconfiguration
+- **Dual Devices**: Living room device with volume control, kitchen device adds a physical pause button
 
 ## Demo
 
-> Add photos/videos here: NFC cards, ESP32 controller, in-use demonstration
+_Photos and videos to be added: Hardware assembly, NFC cards in use, device enclosures_
 
-## Quick Start
+---
 
-### Prerequisites
-- Home Assistant installation
-- ESP32 DevKitC with USB-C
-- PN532 NFC reader module
-- NTAG215 NFC tags
-- Python 3.7+ with pip
+## Technical Highlights
 
-### Installation
+### Hardware Design
 
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/nfc-party-controller.git
-cd nfc-party-controller
+**Custom ESP32 Controller** built from scratch with hand-soldered components on protoboard:
+- **PN532 NFC Reader**: I2C communication (GPIO 21/22) for reading NTAG215 cards
+- **10kΩ Potentiometer**: ADC input (GPIO 34) with 12dB attenuation for volume control
+- **2N7000 MOSFET Circuit**: Level-shifted buzzer driver with 100Ω gate resistor and 1N5818 flyback diode for driving 5V passive buzzer from 3.3V GPIO
+- **Pause Button**: GPIO 18 pullup input (Device 2 only)
+- **Battery System**: 18650 lithium-ion cells (2x for Device 1, 1x for Device 2) with charging circuit
+
+**Power Optimization Challenges**:
+- Achieved 40-60 hour battery life through ESPHome WiFi light sleep mode
+- PN532 duty cycle optimization (1s scan interval, 100-200ms active scanning)
+- Average power draw: 100-150mA per device
+
+### Firmware Architecture
+
+**ESPHome Configuration**:
+- **Modular Package System**: `common.yaml` contains shared configuration, device-specific files extend it
+- **ADC Filtering**: Sliding window moving average + delta filter eliminates potentiometer noise
+- **75% Volume Clamp**: Prevents guests from setting excessive volume levels
+- **RTTTL Buzzer Feedback**: PWM-driven audio feedback on NFC scan events
+
+### Software Design
+
+**Event-Driven Architecture**:
+- ESP32 devices emit NFC tag events to Home Assistant (no business logic in firmware)
+- All playlist assignments, lighting triggers, and automation logic in Home Assistant
+- Tags can be reassigned without reflashing firmware
+
+**Home Assistant Integration**:
+- **Spotcast**: Handles Spotify playback initiation and speaker targeting
+- **SpotifyPlus**: Provides Spotify API access for advanced controls
+- **Philips Hue**: Synchronized lighting scenes triggered by NFC cards
+- **Automations/Scripts/Blueprints**: Modular YAML configuration organized by function
+
+---
+
+## System Architecture
+
 ```
-
-2. Set up ESPHome
-```bash
-pip install esphome
-cp esphome/secrets.yaml.example esphome/secrets.yaml
-# Edit secrets.yaml with your WiFi credentials
-esphome run esphome/nfc_controller.yaml
-```
-
-3. Configure Home Assistant
-```bash
-# Copy packages to Home Assistant config directory
-cp -r home-assistant/packages /config/packages/
-
-# Edit configuration.yaml to enable packages
-# Add: homeassistant:
-#        packages: !include_dir_named packages/
-```
-
-4. Register NFC tags and create automations
-
-Full setup guide: [docs/SETUP.md](docs/SETUP.md)
-
-## Architecture
-
-```
-Physical Cards → PN532 NFC Reader → ESP32 (ESPHome)
-                                       ↓
-                              Home Assistant
-                               ↓         ↓
-                          Spotify    Bang & Olufsen
+NFC Cards → PN532 Readers → ESP32 Devices (ESPHome)
+                                  ↓
+                         Home Assistant
+                          ↓      ↓      ↓
+                     Spotify  Hue  Admin Controls
 ```
 
 **Design Principles**:
-- Event-driven NFC handling (no hardcoded tag IDs)
-- Logic in Home Assistant, not ESP32 firmware
-- Modular package-based configuration
-- Native integration with audio systems
+- **Separation of Concerns**: ESPHome handles hardware events, Home Assistant handles all business logic
+- **Event-Driven**: NFC tags emit events; no hardcoded tag IDs in firmware allows flexible reassignment
+- **Modular Configuration**: Automations organized by function (device controls, NFC admin, lighting, Spotify integrations)
+- **Security**: API encryption, OAuth tokens, secrets in gitignored files
 
-Read more: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+See detailed architecture decisions: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-## Hardware
+---
 
-**ESP32 DevKitC** with:
-- PN532 NFC reader (I2C)
-- 3x tactile buttons (play/pause, next, group)
-- 10kΩ potentiometer (volume control)
-- 5V buzzer with MOSFET driver circuit
-- Custom MOSFET switching for 5V components
+## Hardware Details
 
-**Bill of Materials**: ~$50-60 total cost
+**Two ESP32 DevKitC USB-C Controllers** with hand-soldered protoboard assembly:
+- PN532 NFC reader module (I2C communication)
+- 10kΩ linear potentiometer for volume control
+- 2N7000 MOSFET buzzer driver circuit (5V passive buzzer)
+- GPIO pause button (Device 2 only)
+- 18650 lithium-ion battery system with charging circuit
+- All components chosen for low power consumption
 
-See: [hardware/README.md](hardware/README.md) for schematics and assembly guide
+See complete schematics, pinouts, and assembly notes: [hardware/README.md](hardware/README.md)
 
-## Software Stack
+## Technology Stack
 
-- **ESPHome**: ESP32 firmware and hardware abstraction
-- **Home Assistant**: Automation platform and integration hub
-- **Spotify API**: Music playback control
-- **Bang & Olufsen Integration**: Native Beolink multi-room audio
-- **Future**: Philips Hue for synchronized lighting
+**Firmware**:
+- [ESPHome](https://esphome.io/) - ESP32 firmware framework with YAML configuration
+
+**Platform**:
+- [Home Assistant](https://www.home-assistant.io/) - Automation platform and integration hub
+
+**Integrations**:
+- [Spotcast](https://github.com/fondberg/spotcast) - Spotify playback control
+- [SpotifyPlus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) - Spotify Web API integration
+- [Philips Hue](https://www.home-assistant.io/integrations/hue/) - Smart lighting control
+
+---
 
 ## Project Structure
 
 ```
 nfc-party-controller/
-├── esphome/               # ESP32 firmware configuration
-├── home-assistant/        # HA packages and config
-│   └── packages/          # Modular automation packages
-├── hardware/              # Schematics, BOM, photos
-├── cards/                 # NFC tag mapping and printing guide
-└── docs/                  # Setup, architecture, troubleshooting
+├── esphome/                    # ESP32 firmware configurations
+│   ├── common.yaml             # Shared device configuration
+│   ├── nfc_controller_1.yaml  # Device 1 (living room)
+│   └── nfc_controller_2.yaml  # Device 2 (kitchen with pause button)
+├── home-assistant/             # Home Assistant automations and configs
+│   ├── device_controls/        # Volume and button automations
+│   ├── nfc_admin/              # Admin card functions
+│   ├── spotcast/               # Spotify playback scripts
+│   ├── spotifyplus/            # Spotify API automations
+│   └── lighting/               # Hue lighting automations
+├── hardware/                   # Schematics, pinouts, assembly notes
+│   ├── README.md               # Hardware documentation
+│   └── schematics/             # Circuit diagrams and pinout tables
+└── docs/                       # Architecture and troubleshooting
+    ├── ARCHITECTURE.md         # System design and decisions
+    └── TROUBLESHOOTING.md      # Common issues and solutions
 ```
-
-## Key Files
-
-- `esphome/nfc_controller.yaml` - ESP32 firmware config
-- `home-assistant/packages/nfc_tags.yaml` - Tag event handling
-- `home-assistant/packages/party_mode.yaml` - Party mode state management
-- `home-assistant/packages/audio_control.yaml` - Multi-room audio control
-- `cards/tag_mapping.csv` - Tag assignments (100 tags)
 
 ## Use Cases
 
