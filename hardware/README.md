@@ -293,21 +293,28 @@ GND   ----------------  Pin 3 (GND)
 
 **Power Configuration**:
 Both devices use rechargeable 18650 lithium-ion batteries with integrated charging circuits:
-- **Device 1**: 2x 18650 batteries in series/parallel (higher capacity)
+- **Device 1**: 2x 18650 batteries (higher capacity)
 - **Device 2**: 1x 18650 battery (more compact)
 - Charging circuit handles battery management and protection
 - USB-C port used for charging and programming
 
-**Power Consumption** (Estimated):
-- ESP32 (WiFi active): ~160-260mA
-- PN532: ~100-150mA
-- Buzzer (when active): ~30-50mA
-- **Total: ~300-450mA (peak)**
+**Power Consumption** (Actual Configuration):
+The devices use several power-saving features:
+- ESP32 WiFi power save mode: `light` (reduces power consumption between transmissions)
+- PN532 scan interval: 1s (active ~100-200ms per second = 10-20% duty cycle)
+- Buzzer: Only active during interactions (<1% of runtime, negligible)
+
+**Estimated Power Draw**:
+- ESP32 (WiFi light power save): ~80-120mA average
+- PN532 (10-20% duty cycle): ~15-30mA average
+- Buzzer (negligible usage): <1mA average
+- **Total: ~100-150mA average**
 
 **Battery Life** (Approximate):
-- Device 1 with 2x 3000mAh batteries: ~13-20 hours continuous use
-- Device 2 with 1x 3000mAh battery: ~6-10 hours continuous use
-- Actual runtime depends on WiFi activity and buzzer usage
+With typical 3000mAh 18650 batteries:
+- Device 1 (2x 3000mAh): ~40-60 hours continuous operation
+- Device 2 (1x 3000mAh): ~20-30 hours continuous operation
+- Actual runtime depends on WiFi activity, distance to AP, and interaction frequency
 
 ---
 
