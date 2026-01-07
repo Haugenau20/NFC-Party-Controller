@@ -131,88 +131,58 @@ nfc-party-controller/
     └── TROUBLESHOOTING.md      # Common issues and solutions
 ```
 
-## Use Cases
+---
 
-**Music Control**:
-- Scan "Energetic Party Mix" card → Spotify playlist starts on all speakers
-- Rotate volume knob → All speakers adjust in sync
-- Press button → Skip track or toggle play/pause
+## Key Features Demonstrated
 
-**Party Mode**:
-- Scan "Party Mode" card → Activates party mode, sets volume, future: lighting scenes
-- Mood-based automation (energetic, chill, romantic, focus)
-- Track song play count and statistics
+**Embedded Systems**:
+- Custom circuit design with MOSFET-based level shifting
+- ADC signal processing with multi-stage filtering
+- I2C peripheral communication
+- Power optimization for battery operation
 
-**Multi-Room**:
-- Group all Bang & Olufsen speakers with single button
-- Room-specific cards (office, kitchen, living room)
-- Native Beolink synchronization for superior audio quality
+**IoT Integration**:
+- WiFi-connected ESP32 with OTA firmware updates
+- Event-driven architecture with Home Assistant API
+- OAuth-based Spotify API integration
+- RESTful API interactions with Philips Hue
 
-## Technical Highlights
-
-**Hardware**:
-- Logic-level MOSFET switching for 5V buzzer from 3.3V GPIO
-- ADC filtering (sliding window + delta) for smooth potentiometer readings
-- I2C communication with PN532 NFC module
-- Flyback diode protection for inductive loads
-
-**Software**:
-- Event-driven architecture (no hardcoded tag IDs in firmware)
-- Home Assistant package system for modular configuration
-- Generic script templates for scalable tag automation
-- Native integration with Bang & Olufsen Beolink
-
-**Best Practices**:
-- Separation of concerns (ESPHome = hardware, HA = logic)
-- Gitignored secrets for security
-- Comprehensive documentation
-- Version-controlled configuration
-
-## Roadmap
-
-### Current Progress
-- [x] ESP32 hardware assembly
-- [x] PN532 NFC reader integration
-- [x] ESPHome firmware with buttons, potentiometer, buzzer
-- [x] Home Assistant package structure
-- [x] Bang & Olufsen speaker integration
-- [x] Basic Spotify control
-
-### Next Steps
-- [ ] Print and assign 100 NFC cards
-- [ ] Create card designs and templates
-- [ ] Add Philips Hue integration
-- [ ] Build custom enclosure for ESP32
-- [ ] Create Lovelace dashboard for manual control
-- [ ] Implement guest DJ mode
-- [ ] Add usage analytics and statistics
-
-## Documentation
-
-- [Setup Guide](docs/SETUP.md) - Complete installation instructions
-- [Architecture](docs/ARCHITECTURE.md) - System design and decisions
-- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
-- [Hardware](hardware/README.md) - Schematics and assembly
-- [Card Printing](cards/printing_guide.md) - NFC card design and printing
-
-## License
-
-MIT License - see [LICENSE](LICENSE)
-
-## Acknowledgments
-
-- ESPHome community for excellent ESP32 framework
-- Home Assistant for powerful automation platform
-- Bang & Olufsen for native Beolink integration
-- Spotify API for music control
-
-## Contact
-
-**Developer**: Søren  
-**Location**: Haderslev, South Denmark, DK  
-**GitHub**: [Your GitHub Profile]  
-**Portfolio**: [Your Portfolio]
+**Problem Solving**:
+- 75% volume clamp to prevent excessive volume in social settings
+- Delta filtering to reduce unnecessary network traffic from potentiometer updates
+- WiFi light sleep mode achieving 40-60 hour battery life
+- NFC duty cycle optimization balancing responsiveness and power consumption
 
 ---
 
-Built with passion for music, technology, and great parties.
+## Documentation
+
+- [System Architecture](docs/ARCHITECTURE.md) - Design principles and key technical decisions
+- [Hardware Details](hardware/README.md) - Complete schematics, pinouts, and component selection rationale
+- [ESPHome Configuration](esphome/README.md) - Firmware architecture and configuration details
+- [Troubleshooting Guide](docs/TROUBLESHOOTING.md) - Hardware and software debugging reference
+
+---
+
+## About This Project
+
+This project represents a practical exploration of embedded systems, IoT integration, and home automation. It demonstrates end-to-end system design from hardware assembly through firmware development to application-level automation logic.
+
+**Technical Skills Showcased**:
+- Embedded C/C++ (ESP32/ESPHome)
+- Circuit design and prototyping
+- YAML-based declarative configuration
+- API integration (Spotify, Philips Hue)
+- Git-based version control and documentation
+
+---
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for details
+
+---
+
+**Developer**: Søren
+**Location**: Haderslev, South Denmark
+**Built**: 2024-2025
