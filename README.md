@@ -157,5 +157,4 @@ MIT License - See [LICENSE](LICENSE) for details
 ---
 
 **Developer**: Søren
-**Location**: Haderslev, South Denmark
-**Built**: Q4 2024, Deployed: New Year 2025
+**Built**: Q4 2025, Deployed: New Year 2026
