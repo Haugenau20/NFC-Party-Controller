@@ -31,7 +31,7 @@ Multi-tier home automation system combining battery-powered ESP32 hardware, ESPH
 **HA Automations/Scripts/Blueprints**: Modularity and maintainability
 **Spotcast + SpotifyPlus**: Dual Spotify integrations for playback control and API access
 **Battery-powered**: 18650 lithium-ion cells (2x Device 1, 1x Device 2) with WiFi power save mode
-**MOSFET buzzer circuit**: 5V passive buzzer driven from 3.3V GPIO via 2N7000 with 100Ω gate resistor
+**MOSFET buzzer circuit**: 5V passive buzzer driven from 3.3V GPIO via 2N7000 with 1kΩ gate resistor
 **ADC filtering + 75% clamp**: Smooth potentiometer readings, prevent excessive volume
 **Two devices**: Device 1 (living room), Device 2 (kitchen with pause button)
 

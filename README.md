@@ -38,7 +38,7 @@ Beyond solving the technical problem, the project allowed exploration of the cre
 **Custom ESP32 Controller** built from scratch with hand-soldered components on protoboard:
 - **PN532 NFC Reader**: I2C communication (GPIO 21/22) for reading NTAG215 cards
 - **10kΩ Potentiometer**: ADC input (GPIO 34) with 12dB attenuation for volume control
-- **2N7000 MOSFET Circuit**: Level-shifted buzzer driver with 100Ω gate resistor and 1N5818 flyback diode for driving 5V passive buzzer from 3.3V GPIO
+- **2N7000 MOSFET Circuit**: Level-shifted buzzer driver with 1kΩ gate resistor and 1N5818 flyback diode for driving 5V passive buzzer from 3.3V GPIO
 - **Pause Button**: GPIO 18 pullup input (Device 2 only)
 - **Battery System**: 18650 lithium-ion cells (2x for Device 1, 1x for Device 2) with charging circuit
 

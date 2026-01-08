@@ -36,7 +36,7 @@ The project uses two identical ESP32 controllers with slightly different configu
 | Potentiometer | 10kΩ linear | GPIO34 (ADC) | Volume control (0-75%) |
 | Buzzer | 5V passive buzzer | GPIO23 (via MOSFET) | Audio feedback |
 | MOSFET | 2N7000 N-channel | GPIO23 (gate) | 5V buzzer driver |
-| Gate Resistor | 100Ω | GPIO23 to gate | MOSFET gate protection |
+| Gate Resistor | 1kΩ | GPIO23 to gate | MOSFET gate protection |
 | Flyback Diode | 1N5818 Schottky | Across buzzer | Inductive spike protection |
 | Battery | 2x 18650 (3.7V) | - | Portable power |
 | Charging Circuit | 18650 charger module | - | Battery management |
@@ -69,7 +69,7 @@ The buzzer requires 5V but the ESP32 GPIO outputs 3.3V. A MOSFET switching circu
                      |
                 [MOSFET] 2N7000 (N-channel)
                      |
-GPIO 23 ----[100Ω]---+---- Gate
+GPIO 23 ----[1kΩ]---+---- Gate
                      |
                   Source
                      |
@@ -81,7 +81,7 @@ GPIO 23 ----[100Ω]---+---- Gate
   - V_GS(th): 2.1V max (can be driven by 3.3V GPIO)
   - I_D(max): 200mA
   - V_DS(max): 60V
-- **Gate Resistor**: 100Ω resistor between GPIO23 and MOSFET gate
+- **Gate Resistor**: 1kΩ resistor between GPIO23 and MOSFET gate
   - Limits inrush current to gate
   - Provides gate protection
 - **Diode**: 1N5818 Schottky diode
@@ -90,7 +90,7 @@ GPIO 23 ----[100Ω]---+---- Gate
 - **Buzzer**: 5V passive buzzer (PWM-driven via LEDC)
 
 **Operation**:
-1. GPIO 23 HIGH (3.3V PWM) → Current flows through 100Ω resistor → MOSFET conducts → Buzzer sounds
+1. GPIO 23 HIGH (3.3V PWM) → Current flows through 1kΩ resistor → MOSFET conducts → Buzzer sounds
 2. GPIO 23 LOW (0V) → MOSFET off → Buzzer silent
 3. Diode protects against voltage spikes when buzzer turns off
 4. Gate resistor limits current and protects both GPIO and MOSFET gate
@@ -165,7 +165,7 @@ GND   ----------------  Pin 3 (GND)
 | 1 | Potentiometer | 10kΩ linear, PCB mount |
 | 1 | Passive buzzer | 5V, through-hole |
 | 1 | MOSFET | 2N7000 (N-channel, logic-level) |
-| 1 | Resistor | 100Ω (for MOSFET gate protection) |
+| 1 | Resistor | 1kΩ (for MOSFET gate protection) |
 | 1 | Schottky diode | 1N5818 |
 | 1 | Protoboard | Soldered permanent assembly |
 | - | Wire | For soldered connections |
@@ -224,7 +224,7 @@ GND   ----------------  Pin 3 (GND)
 ### 4. Buzzer Circuit (Both Devices)
 
 1. **Place MOSFET**:
-   - Gate → 100Ω resistor → GPIO 23
+   - Gate → 1kΩ resistor → GPIO 23
    - Source → GND
    - Drain → Buzzer negative lead
 2. **Connect buzzer**:

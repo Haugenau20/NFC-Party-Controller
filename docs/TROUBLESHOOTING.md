@@ -54,7 +54,7 @@ Common issues and solutions for the NFC Party Controller.
 **Symptoms**: No sound on tag scan
 
 **Solutions**:
-- Check MOSFET wiring (gate to GPIO23 via 100Ω resistor)
+- Check MOSFET wiring (gate to GPIO23 via 1kΩ resistor)
 - Verify 5V power to buzzer
 - Test 2N7000 MOSFET with multimeter
 - Check flyback diode orientation (1N5818)
