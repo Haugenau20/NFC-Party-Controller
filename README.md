@@ -2,7 +2,7 @@
 
 > Tap a card. Play a playlist. Control your home.
 
-A battery-powered, event-driven home automation system using custom ESP32 hardware and NFC cards to control Spotify playback and Philips Hue lighting. Built with ESPHome and Home Assistant, this project showcases embedded systems design, IoT integration, and smart home architecture.
+A battery-powered, event-driven home automation system using custom ESP32 hardware and NFC cards to control Spotify playback and Philips Hue lighting. Built with ESPHome and Home Assistant, this project showcases IoT system integration, hardware-software interfacing, and smart home architecture.
 
 ---
 
@@ -23,6 +23,14 @@ _Photos and videos to be added: Hardware assembly, NFC cards in use, device encl
 
 ---
 
+## Why NFC Cards?
+
+Traditional party music control creates friction—guests compete for phone access to change songs, hosts become tethered to DJ duties, and music selection becomes a point of conflict rather than connection. This project was born from both a practical need and creative curiosity: could physical objects (NFC cards) transform music control from a utilitarian task into a social experience that sparks conversation and interaction?
+
+Beyond solving the technical problem, the project allowed exploration of the creative design space where hardware meets user experience—designing card aesthetics, crafting intuitive interactions, and building a system that encourages rather than inhibits social dynamics. It served as a comprehensive technical challenge integrating multiple complex systems (microcontrollers, home automation, APIs, networked audio) while testing whether thoughtful interface design could make technology feel more human and playful in a real-world party environment.
+
+---
+
 ## Technical Highlights
 
 ### Hardware Design
@@ -35,9 +43,9 @@ _Photos and videos to be added: Hardware assembly, NFC cards in use, device encl
 - **Battery System**: 18650 lithium-ion cells (2x for Device 1, 1x for Device 2) with charging circuit
 
 **Power Optimization Challenges**:
-- Achieved 40-60 hour battery life through ESPHome WiFi light sleep mode
-- PN532 duty cycle optimization (1s scan interval, 100-200ms active scanning)
-- Average power draw: 100-150mA per device
+- Configured for extended battery life: ESPHome WiFi light sleep mode and PN532 duty cycle optimization
+- PN532 scan interval: 1s with 100-200ms active scanning (10-20% duty cycle)
+- Target power draw: 100-150mA per device for 40-60 hour operation on 18650 cells
 
 ### Firmware Architecture
 
@@ -147,11 +155,11 @@ nfc-party-controller/
 
 ## Key Features Demonstrated
 
-**Embedded Systems**:
-- Custom circuit design with MOSFET-based level shifting
+**Hardware-Software Integration**:
+- Hardware assembly with MOSFET-based level shifting
 - ADC signal processing with multi-stage filtering
 - I2C peripheral communication
-- Power optimization for battery operation
+- Power-conscious component selection and configuration
 
 **IoT Integration**:
 - WiFi-connected ESP32 with OTA firmware updates
@@ -162,8 +170,8 @@ nfc-party-controller/
 **Problem Solving**:
 - 75% volume clamp to prevent excessive volume in social settings
 - Delta filtering to reduce unnecessary network traffic from potentiometer updates
-- WiFi light sleep mode achieving 40-60 hour battery life
-- NFC duty cycle optimization balancing responsiveness and power consumption
+- WiFi light sleep mode configuration for extended battery life
+- NFC duty cycle configuration balancing responsiveness and power consumption
 
 ---
 
@@ -182,7 +190,7 @@ This project represents a practical exploration of embedded systems, IoT integra
 
 **Technical Skills Showcased**:
 - YAML-based firmware configuration (ESPHome)
-- Circuit design and prototyping
+- Hardware assembly and component integration
 - Home Assistant automation logic
 - API integration (Spotify, Philips Hue)
 - Git-based version control and documentation
@@ -197,4 +205,4 @@ MIT License - See [LICENSE](LICENSE) for details
 
 **Developer**: Søren
 **Location**: Haderslev, South Denmark
-**Built**: 2024-2025
+**Built**: Q4 2024, Deployed: New Year 2025
