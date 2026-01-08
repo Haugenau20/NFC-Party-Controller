@@ -80,6 +80,18 @@ NFC Cards → PN532 Readers → ESP32 Devices (ESPHome)
 
 See detailed architecture decisions: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
+## Related Project: Visual Dashboard
+
+This NFC controller can be enhanced with an optional **real-time visualization dashboard**:
+
+**[New Year Dashboard](https://github.com/Haugenau20/new-year-dashboard)** - React/TypeScript web application providing:
+- Real-time Spotify playback display with album artwork and dynamic backgrounds
+- Special song detection (highlights tracks triggered by NFC cards)
+- Integration with Home Assistant API and Spotify Web API
+- Built for New Year celebration, adaptable for general "now playing" displays
+
+The dashboard is **purely a visual enhancement** - the NFC controller functions completely independently. Together, they demonstrate a full-stack IoT ecosystem from embedded hardware to modern web frontend.
+
 ---
 
 ## Hardware Details
