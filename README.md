@@ -102,18 +102,6 @@ The dashboard is **purely a visual enhancement** - the NFC controller functions 
 
 ---
 
-## Hardware Details
-
-**Two ESP32 DevKitC USB-C Controllers** with hand-soldered protoboard assembly:
-- PN532 NFC reader module (I2C communication)
-- 10kΩ linear potentiometer for volume control
-- 2N7000 MOSFET buzzer driver circuit (5V passive buzzer)
-- GPIO pause button (Device 2 only)
-- 18650 lithium-ion battery system with charging circuit
-- All components chosen for low power consumption
-
-See complete schematics, pinouts, and assembly notes: [hardware/README.md](hardware/README.md)
-
 ## Technology Stack
 
 **Firmware**:
@@ -153,47 +141,12 @@ nfc-party-controller/
 
 ---
 
-## Key Features Demonstrated
-
-**Hardware-Software Integration**:
-- Hardware assembly with MOSFET-based level shifting
-- ADC signal processing with multi-stage filtering
-- I2C peripheral communication
-- Power-conscious component selection and configuration
-
-**IoT Integration**:
-- WiFi-connected ESP32 with OTA firmware updates
-- Event-driven architecture with Home Assistant API
-- OAuth-based Spotify API integration
-- RESTful API interactions with Philips Hue
-
-**Problem Solving**:
-- 75% volume clamp to prevent excessive volume in social settings
-- Delta filtering to reduce unnecessary network traffic from potentiometer updates
-- WiFi light sleep mode configuration for extended battery life
-- NFC duty cycle configuration balancing responsiveness and power consumption
-
----
-
 ## Documentation
 
 - [System Architecture](docs/ARCHITECTURE.md) - Design principles and key technical decisions
 - [Hardware Details](hardware/README.md) - Complete schematics, pinouts, and component selection rationale
 - [ESPHome Configuration](esphome/README.md) - Firmware architecture and configuration details
 - [Troubleshooting Guide](docs/TROUBLESHOOTING.md) - Hardware and software debugging reference
-
----
-
-## About This Project
-
-This project represents a practical exploration of embedded systems, IoT integration, and home automation. It demonstrates end-to-end system design from hardware assembly through firmware development to application-level automation logic.
-
-**Technical Skills Showcased**:
-- YAML-based firmware configuration (ESPHome)
-- Hardware assembly and component integration
-- Home Assistant automation logic
-- API integration (Spotify, Philips Hue)
-- Git-based version control and documentation
 
 ---
 
