@@ -181,9 +181,9 @@ nfc-party-controller/
 This project represents a practical exploration of embedded systems, IoT integration, and home automation. It demonstrates end-to-end system design from hardware assembly through firmware development to application-level automation logic.
 
 **Technical Skills Showcased**:
-- Embedded C/C++ (ESP32/ESPHome)
+- YAML-based firmware configuration (ESPHome)
 - Circuit design and prototyping
-- YAML-based declarative configuration
+- Home Assistant automation logic
 - API integration (Spotify, Philips Hue)
 - Git-based version control and documentation
 
