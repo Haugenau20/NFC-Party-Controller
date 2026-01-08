@@ -157,4 +157,4 @@ MIT License - See [LICENSE](LICENSE) for details
 ---
 
 **Developer**: Søren
-**Built**: Q4 2025, Deployed: New Year 2026
+**Built**: Q4 2025, Deployed: New Year's Eve 2025
