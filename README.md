@@ -19,39 +19,9 @@ A battery-powered, event-driven home automation system using custom ESP32 hardwa
 
 ## Demo
 
-### NFC Card in Action
+![NFC tap triggering Spotify playback](demos/song_tap.mp4)
 
-![NFC tap triggering Spotify playback](demos/song_tap.MOV)
-
-*Tapping an NFC card to start a Spotify playlist - immediate feedback via buzzer and playback initiation*
-
-### Hardware
-
-<p align="center">
-  <img src="demos/both_device_plus_cards.jpg" alt="Both devices with NFC cards" width="600"/>
-</p>
-
-*Living room and kitchen devices with custom NFC cards*
-
-<details>
-<summary>Inside the Devices</summary>
-
-<p align="center">
-  <img src="demos/device_1_inside_close_up.jpg" alt="Device 1 internal components" width="45%"/>
-  <img src="demos/device_2_inside.jpg" alt="Device 2 internal components" width="45%"/>
-</p>
-
-*Hand-soldered protoboard with PN532 NFC reader, potentiometer, and MOSFET buzzer circuit*
-
-</details>
-
-### System Wiring Diagram
-
-<p align="center">
-  <img src="demos/breadboard.png" alt="System wiring diagram" width="600"/>
-</p>
-
-*Complete wiring schematic showing ESP32, PN532 NFC reader, volume potentiometer, and pause button connections*
+*Tapping an NFC card to start a Spotify playlist*
 
 ---
 

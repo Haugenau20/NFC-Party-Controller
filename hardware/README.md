@@ -53,6 +53,14 @@ The project uses two identical ESP32 controllers with slightly different configu
 
 ## Circuit Schematics
 
+### System Wiring Overview
+
+<p align="center">
+  <img src="../demos/breadboard.png" alt="Complete wiring diagram" width="700"/>
+</p>
+
+*Complete wiring diagram showing ESP32, PN532 NFC reader, volume potentiometer, and pause button connections*
+
 ### Buzzer MOSFET Switching Circuit
 
 The buzzer requires 5V but the ESP32 GPIO outputs 3.3V. A MOSFET switching circuit allows the ESP32 to control the 5V passive buzzer:
