@@ -51,6 +51,28 @@ The project uses two identical ESP32 controllers with slightly different configu
 
 ---
 
+## Assembled Hardware
+
+<p align="center">
+  <img src="../demos/both_device_inside.jpg" alt="Both devices internal view" width="700"/>
+</p>
+
+*Internal view of both devices showing hand-soldered protoboard construction*
+
+<details>
+<summary>Individual Device Close-ups</summary>
+
+<p align="center">
+  <img src="../demos/device_1_inside_close_up.jpg" alt="Device 1 internals" width="45%"/>
+  <img src="../demos/device_2_inside.jpg" alt="Device 2 internals" width="45%"/>
+</p>
+
+*Left: Device 1 (living room) - Right: Device 2 (kitchen with pause button)*
+
+</details>
+
+---
+
 ## Circuit Schematics
 
 ### System Wiring Overview
