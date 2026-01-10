@@ -24,7 +24,7 @@ A battery-powered, event-driven home automation system using custom ESP32 hardwa
 *Tapping an NFC card to queue a song favourite*
 
 <p align="center">
-  <img src="demos/both_devices_plus_cards.jpg" alt="Both devices with NFC cards" width="700"/>
+  <img src="demos/both_device_plus_cards.jpg" alt="Both devices with NFC cards" width="700"/>
 </p>
 
 *Living room and kitchen devices with custom NFC cards*
