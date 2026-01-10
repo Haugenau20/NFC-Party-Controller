@@ -19,7 +19,7 @@ A battery-powered, event-driven home automation system using custom ESP32 hardwa
 
 ## Demo
 
-![NFC tap triggering Spotify playback](demos/song_tap.mp4)
+![NFC tap triggering Spotify playback](demos/song_tap.gif)
 
 *Tapping an NFC card to start a Spotify playlist*
 
