@@ -1,23 +1,30 @@
 # ESPHome Configuration
 
-This directory contains the ESPHome firmware configuration for the NFC Party Controller ESP32 board.
+This directory contains ESPHome firmware configurations for the two NFC Party Controller devices.
 
-## Hardware
+**Note**: This document covers firmware configuration only. For hardware assembly, circuit schematics, and physical wiring, see the [Related Documentation](#related-documentation) section at the bottom.
 
-**Board**: ESP32 USB-C IoT DevKitC
+---
 
-**Components**:
-- PN532 NFC Reader (I2C: SDA=GPIO21, SCL=GPIO22)
-- 3x GPIO Buttons (GPIO18, GPIO19, GPIO5) with internal pullups
-- Potentiometer for volume control (GPIO34, analog input)
-- Buzzer (GPIO25, DAC output) - **Note**: Physical circuit uses GPIO23 with 5V MOSFET (IRLD120 + 1N5818 diode)
-- Status LED (GPIO2, built-in)
+## Device Overview
+
+This project uses two ESP32 controllers with different firmware configurations:
+
+- **Device 1** (`nfc_controller_1.yaml`) - Living Room (Stue)
+- **Device 2** (`nfc_controller_2.yaml`) - Kitchen (Kokken) - adds pause/play button
+
+---
 
 ## Files
 
-- `nfc_controller.yaml` - Main ESPHome configuration
+- `common.yaml` - Shared configuration for both devices (WiFi, API, NFC, buzzer, volume)
+- `nfc_controller_1.yaml` - Device 1 firmware (Living Room)
+- `nfc_controller_2.yaml` - Device 2 firmware (Kitchen, adds pause button)
+- `nfc_controller_test.yaml` - Test configuration for hardware validation
 - `secrets.yaml.example` - Template for credentials (copy to `secrets.yaml`)
 - `secrets.yaml` - Your actual credentials (gitignored)
+
+---
 
 ## Setup
 
@@ -49,73 +56,183 @@ python3 -c "import secrets; print(secrets.token_hex(32))"
 
 ### 3. Compile and Upload
 
+Choose which device you're configuring (Device 1 or Device 2).
+
 **First time** (via USB):
 ```bash
-esphome run nfc_controller.yaml
+# For Device 1 (Living Room)
+esphome run nfc_controller_1.yaml
+
+# For Device 2 (Kitchen)
+esphome run nfc_controller_2.yaml
 ```
 
 **Subsequent updates** (via OTA):
 ```bash
-esphome upload nfc_controller.yaml
+# For Device 1
+esphome upload nfc_controller_1.yaml
+
+# For Device 2
+esphome upload nfc_controller_2.yaml
 ```
 
 ### 4. View Logs
 
 ```bash
-esphome logs nfc_controller.yaml
+# For Device 1
+esphome logs nfc_controller_1.yaml
+
+# For Device 2
+esphome logs nfc_controller_2.yaml
 ```
+
+---
+
+## Configuration Architecture
+
+The configuration uses ESPHome's package system for code reuse:
+
+- `common.yaml` contains shared components (imported by both device configs)
+- Device-specific YAMLs add unique features (e.g., Device 2's pause button)
+- **No tag IDs hardcoded in firmware** - all logic in Home Assistant
+- **Event-driven**: Devices send events to HA, HA handles all logic
+
+---
 
 ## Configuration Details
 
 ### NFC Reader (PN532)
 
-The PN532 is configured in I2C mode and sends tag scan events to Home Assistant:
+**ESPHome Configuration**:
+- I2C mode (SDA=GPIO21, SCL=GPIO22)
+- Update interval: 1s
+- Scan duration: ~100-200ms per second (10-20% duty cycle for power saving)
 
-- When a tag is scanned, the UID is sent to HA via `homeassistant.tag_scanned`
-- Home Assistant's native tag management maps tag IDs to automation actions
-- Audio feedback plays on successful scan
+**Operation**:
+- On tag scan: sends `homeassistant.tag_scanned` event with UID
+- Plays quick beep for audio feedback (`scan:d=4,o=5,b=100:16e6`)
+- All tag-to-action mapping handled in Home Assistant
 
-**No tag IDs are hardcoded in ESPHome** - all logic is in Home Assistant for easy maintenance.
+---
 
 ### Volume Potentiometer
 
-Configured with specific parameters for smooth, responsive control:
+**ESPHome Configuration**:
+```yaml
+platform: adc
+pin: GPIO34
+attenuation: 12db              # Full 0-3.3V range
+update_interval: 100ms         # Responsive but not overwhelming
+filters:
+  - sliding_window_moving_average:
+      window_size: 5           # Smooth out noise
+      send_every: 1
+  - calibrate_linear:
+      - 0.142 -> 0.0           # Measured voltage range
+      - 3.118 -> 100.0
+  - clamp:
+      min_value: 0
+      max_value: 75            # Prevent excessive volume
+      ignore_out_of_range: true
+  - delta: 2.0                 # Only send when >2% change
+```
 
-- **11db attenuation**: Full 0-3.3V range
-- **Sliding window average**: 5 samples to smooth out noise
-- **Delta filter**: Only updates when change > 2% to reduce unnecessary events
-- **100ms update interval**: Responsive but not overwhelming
+**Why these settings?**:
+- **12dB attenuation**: Allows full voltage range from potentiometer
+- **Sliding window**: Reduces electrical noise from long wires
+- **Delta filter**: Prevents event spam from minor fluctuations
+- **75% clamp**: Prevents guests from making speakers too loud for conversation
 
-### Buttons
+---
 
-Three GPIO buttons with internal pullups (inverted logic):
+### Buzzer
 
-- Button 1 (GPIO18) - Radio control
-- Button 2 (GPIO19) - Channel selection  
-- Button 3 (GPIO5) - Additional control
+**ESPHome Configuration**:
+```yaml
+output:
+  - platform: ledc            # PWM via LED Control peripheral
+    pin: GPIO23               # Connected via MOSFET circuit
+    id: buzzer_output
 
-Each button sends an event to Home Assistant when pressed, allowing flexible automation without firmware changes.
+rtttl:
+  output: buzzer_output
+  id: buzzer_rtttl
+```
 
-### Buzzer Circuit
+**Sound Library**:
+- **Success sounds**: Level Up, Party Horn, Mario, Fanfare (randomized)
+- **Failure sound**: Buzz pattern
+- **Master sounds**: Rising/falling frequency sweeps
+- All sounds defined in `common.yaml` scripts
 
-**Important**: The YAML uses GPIO25 (DAC output) for the RTTTL component, but the physical buzzer is connected to GPIO23 via a 5V MOSFET switching circuit:
+---
 
-- MOSFET: IRLD120 (logic-level N-channel)
-- Flyback diode: 1N5818 Schottky
-- This allows driving a 5V buzzer from 3.3V GPIO logic
+### Pause/Play Button (Device 2 Only)
 
-If you're using a 3.3V piezo buzzer directly, you can connect it to GPIO25 without the MOSFET circuit.
+**ESPHome Configuration**:
+```yaml
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO18
+      mode:
+        input: true
+        pullup: true         # Internal pullup resistor
+      inverted: true         # Active LOW (button connects to GND)
+    filters:
+      - delayed_on: 10ms     # Debounce
+      - delayed_off: 10ms
+    on_press:
+      - homeassistant.event:
+          event: esphome.speaker_button_pressed
+          data:
+            device: nfc-party-controller-2
+```
 
-## Integration with Home Assistant
+Device 1 does not have this button configured.
 
-After uploading the firmware:
+---
 
-1. ESP32 should appear in Home Assistant integrations
-2. Accept the device and enter your API encryption key
-3. All sensors, buttons, and NFC events will be available in HA
-4. Configure automations in Home Assistant to respond to tag scans
+### Power Saving
 
-See `../home-assistant/README.md` for Home Assistant setup details.
+**WiFi Configuration**:
+```yaml
+wifi:
+  power_save_mode: light      # Reduces power between transmissions
+```
+
+This reduces average ESP32 power consumption from ~160-260mA to ~80-120mA.
+
+---
+
+## Home Assistant Integration
+
+After uploading firmware:
+
+1. ESP32 device appears automatically in Home Assistant integrations
+2. Accept the device and enter your API encryption key from `secrets.yaml`
+3. All sensors, buttons, and NFC events available in HA
+4. NFC tags trigger Home Assistant automations (see `/home-assistant/` folder)
+
+### Entities Exposed
+
+**Both Devices**:
+- `sensor.<device>_volume_pot` - Volume potentiometer (0-75%)
+- `button.<device>_play_success` - Trigger success sound
+- `button.<device>_play_failure` - Trigger failure sound
+- `button.<device>_play_master` - Trigger admin sound
+- `button.<device>_play_master_on` - Rising sweep sound
+- `button.<device>_play_master_off` - Falling sweep sound
+
+**Device 2 Only**:
+- `binary_sensor.<device>_speaker_button` - Pause button state
+
+### Events
+
+- `tag_scanned` - NFC tag detected with UID
+- `esphome.speaker_button_pressed` - (Device 2 only) Button pressed
+
+---
 
 ## Troubleshooting
 
@@ -144,21 +261,28 @@ See `../home-assistant/README.md` for Home Assistant setup details.
 - Check OTA password matches `secrets.yaml`
 - Try USB upload if OTA is problematic
 
-## Pin Reference
+---
 
-| Component | GPIO | Notes |
-|-----------|------|-------|
-| NFC SDA | 21 | I2C data |
-| NFC SCL | 22 | I2C clock |
-| Button 1 | 18 | Internal pullup |
-| Button 2 | 19 | Internal pullup |
-| Button 3 | 5 | Internal pullup |
-| Volume Pot | 34 | ADC, 11db attenuation |
-| Buzzer | 25 | DAC output (or GPIO23 with MOSFET) |
-| Status LED | 2 | Built-in LED |
+## Related Documentation
 
-## Further Reading
+**Hardware Documentation**:
+- [Hardware Overview](/hardware/README.md) - Complete hardware specifications, component lists, and device comparison
+- [Circuit Schematics](/hardware/README.md#circuit-schematics) - Buzzer MOSFET circuit, PN532 I2C wiring, button connections, potentiometer setup
+- [Assembly Instructions](/hardware/README.md#assembly-instructions) - Step-by-step hardware build guide
+- [Power Considerations](/hardware/README.md#power-considerations) - Battery configuration and power consumption details
+- [Hardware Troubleshooting](/hardware/README.md#troubleshooting) - Common hardware issues (buzzer not working, button issues, etc.)
+- [ESP32 Pinout Reference](/hardware/schematics/esp32_pinout.md) - Complete pin assignments and available expansion pins
 
-- [ESPHome Documentation](https://esphome.io/)
-- [PN532 Component](https://esphome.io/components/binary_sensor/pn532.html)
+**Automation Documentation**:
+- [Device Controls](/home-assistant/device_controls/) - Volume and button automations
+- [NFC Admin Functions](/home-assistant/nfc_admin/) - Queue reset, permissions, system admin
+- [Spotcast Automations](/home-assistant/spotcast/) - Music control automations
+- [SpotifyPlus Automations](/home-assistant/spotifyplus/) - Alternative Spotify integration
+- [Lighting Automations](/home-assistant/lighting/) - Hue lighting control
+
+**ESPHome Component Documentation**:
+- [ADC Sensor](https://esphome.io/components/sensor/adc.html)
+- [RTTTL Component](https://esphome.io/components/rtttl.html)
+- [Binary Sensor GPIO](https://esphome.io/components/binary_sensor/gpio.html)
 - [Home Assistant Integration](https://esphome.io/components/api.html)
+- [WiFi Component](https://esphome.io/components/wifi.html)

@@ -13,7 +13,7 @@ Common issues and solutions for the NFC Party Controller.
 - Verify 2.4GHz network (ESP32 does not support 5GHz)
 - Check router allows new device connections
 - Look for fallback AP and configure via captive portal
-- Check ESPHome logs: esphome logs esphome/nfc_controller.yaml
+- Check ESPHome logs: `esphome logs esphome/nfc_controller_1.yaml` (or nfc_controller_2.yaml)
 
 ### NFC Tags Not Detected
 
@@ -54,11 +54,22 @@ Common issues and solutions for the NFC Party Controller.
 **Symptoms**: No sound on tag scan
 
 **Solutions**:
-- Check MOSFET wiring (gate to GPIO23)
+- Check MOSFET wiring (gate to GPIO23 via 1kΩ resistor)
 - Verify 5V power to buzzer
-- Test MOSFET with multimeter
-- Check flyback diode orientation
+- Test 2N7000 MOSFET with multimeter
+- Check flyback diode orientation (1N5818)
 - Try different buzzer (may be faulty)
+
+### Pause Button Not Working (Device 2 Only)
+
+**Symptoms**: GPIO18 button press does nothing
+
+**Solutions**:
+- Check button wiring to GPIO18
+- Verify pullup enabled in nfc_controller_2.yaml
+- Test button continuity with multimeter
+- Check ESPHome logs for button events
+- Ensure automation enabled in Home Assistant
 
 ## Software Issues
 
@@ -131,16 +142,16 @@ Common issues and solutions for the NFC Party Controller.
 - Check party mode is active (if required by automation)
 - Test manual volume service call
 
-### Multi-Room Audio Grouping Fails
+### Spotify Playback Issues
 
-**Symptoms**: Speakers not synchronizing
+**Symptoms**: Music not playing or skipping
 
 **Solutions**:
-- Check all speakers online and responsive
-- Verify entity IDs in grouping script
-- Use native Beolink for B&O (not Chromecast)
-- Check speaker firmware up to date
-- Test grouping manually via HA UI
+- Check Spotify speaker is online and responsive
+- Verify Spotcast/SpotifyPlus integration working
+- Ensure Spotify Premium account active
+- Check speaker entity IDs in automations
+- Test playback manually via HA UI
 
 ## Network Issues
 
@@ -205,10 +216,25 @@ Common issues and solutions for the NFC Party Controller.
 - Update ESP32 firmware
 - Check for overheating
 
+### Battery Issues
+
+**Symptoms**: Short battery life or won't power on
+
+**Solutions**:
+- Check 18650 cells are charged (need 2x for Device 1, 1x for Device 2)
+- Verify charging circuit functioning
+- Measure battery voltage (should be 3.7-4.2V per cell)
+- Check battery connections to ESP32 VIN pin
+- WiFi power save mode enabled (reduces power consumption)
+- Replace degraded 18650 cells if capacity reduced
+
 ## Debugging Tools
 
 ### ESPHome Logs
-esphome logs esphome/nfc_controller.yaml
+```bash
+esphome logs esphome/nfc_controller_1.yaml
+esphome logs esphome/nfc_controller_2.yaml
+```
 
 ### Home Assistant Logs
 Settings → System → Logs
