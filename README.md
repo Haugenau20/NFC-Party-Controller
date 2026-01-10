@@ -10,12 +10,12 @@ A battery-powered, event-driven home automation system using custom ESP32 hardwa
 
 **Physical NFC cards** trigger Spotify playlists, lighting scenes, and system controls through two battery-powered ESP32 devices strategically placed in my home.
 
-- **Music Control**: Scan a card to start a playlist, rotate the potentiometer to adjust volume, press the pause button (kitchen device)
+- **Music Control**: Scan a card to start a playlist, rotate the potentiometer to adjust volume, press the pause button (Device 2)
 - **Lighting Automation**: NFC cards trigger Philips Hue lighting scenes coordinated with music playback
 - **Admin Functions**: Dedicated NFC cards reset playback queue, toggle permissions, restart system, or control smart plugs
 - **Battery-Powered**: Each device runs 40-60 hours on 18650 lithium-ion cells with WiFi power-saving optimizations
 - **Event-Driven**: NFC tag IDs aren't hardcoded in firmware—all logic lives in Home Assistant for easy reconfiguration
-- **Dual Devices**: Living room device with volume control, kitchen device adds a physical pause button
+- **Dual Devices**: Device 1 (living room) with volume control, Device 2 (kitchen) adds a physical pause button
 
 ## Demo
 
@@ -27,7 +27,7 @@ A battery-powered, event-driven home automation system using custom ESP32 hardwa
   <img src="demos/both_device_plus_cards.jpg" alt="Both devices with NFC cards" width="700"/>
 </p>
 
-*Living room and kitchen devices with custom NFC cards*
+*Device 1 (living room) and Device 2 (kitchen) with custom NFC cards*
 
 ---
 
@@ -131,8 +131,8 @@ The dashboard is **purely a visual enhancement** - the NFC controller functions 
 nfc-party-controller/
 ├── esphome/                    # ESP32 firmware configurations
 │   ├── common.yaml             # Shared device configuration
-│   ├── nfc_controller_1.yaml  # Device 1 (living room)
-│   └── nfc_controller_2.yaml  # Device 2 (kitchen with pause button)
+│   ├── nfc_controller_1.yaml  # Device 1
+│   └── nfc_controller_2.yaml  # Device 2 (with pause button)
 ├── home-assistant/             # Home Assistant automations and configs
 │   ├── device_controls/        # Volume and button automations
 │   ├── nfc_admin/              # Admin card functions
